@@ -1,0 +1,61 @@
+
+Main:numberOfEvents         = -1 ! number of events generated
+Beams:frameType             = 4
+Check:epTolErr               = 1e-2
+
+# Switch off event generation steps
+PartonLevel:MPI              = off
+PartonLevel:FSR              = off
+PartonLevel:ISR              = off
+HadronLevel:all              = off
+BeamRemnants:primordialKT    = off
+PartonLevel:Remnants         = off
+Check:event                  = off
+TimeShower:QEDshowerByQ      = off
+TimeShower:QEDshowerByL      = off
+SpaceShower:QEDshowerByQ     = off
+SpaceShower:QEDshowerByL     = off
+PartonLevel:FSRinResonances  = off
+ProcessLevel:resonanceDecays = off
+LesHouches:setQuarkMass        = 0
+LesHouches:setLeptonMass       = 0
+LesHouches:matchInOut          = off
+
+#Main:eventTypes = {matched_n0lo_4,matched_n1lo_4,matched_n0lo_5,matched_n1lo_5_4}
+#Main:eventTypes = {matched_n0lo_4,matched_n1lo_4,matched_n1lo_5_4}
+#Main:eventTypes = {matched_n1lo_5_4}
+
+#Beams:LHEF = ../matched_4p5p-xyz1.lhe
+#Beams:LHEF = ../matched_4p5p-xyz7.lhe // last iteration of 5parton matched results
+
+# last conf
+#Main:eventTypes = {matched_n0lo_5,matched_n1lo_5_4,matched_n2lo_5_3,matched_n3lo_5_2}
+#Beams:LHEF = 5p-matched.lhe
+#Beams:LHEF = 5p-sudakov-only.lhe
+
+#Main:eventTypes = {matched_n0lo_4,matched_n1lo_4,matched_n0lo_5,matched_n1lo_5_4}
+#Beams:LHEF = ../4p5ptest.lhe
+
+
+#Main:eventTypes = {matched_n0lo_3,matched_n1lo_3,matched_n2lo_3,matched_n0lo_4,matched_n1lo_4,matched_n0lo_5,matched_n1lo_5_4,matched_n1lo_4_3,matched_n2lo_4_3,matched_n2lo_5_4_3,matched_n2lo_5_3}
+#Main:eventTypes = {matched_n0lo_3,matched_n1lo_3,matched_n2lo_3,matched_n0lo_5,matched_n1lo_5_4,matched_n2lo_5_4_3,matched_n2lo_5_3}
+#Main:eventTypes = {matched_n0lo_3,matched_n1lo_3,matched_n2lo_3,matched_n0lo_5,matched_n1lo_5_4,matched_n2lo_5_4_3,matched_n2lo_5_3,matched_n0lo_4,matched_n1lo_4_3}
+#Main:eventTypes = {matched_n0lo_4,matched_n1lo_4,matched_n0lo_5,matched_n1lo_5_4}
+#Main:eventTypes = {matched_n0lo_3,matched_n1lo_3,matched_n2lo_3}
+#Beams:LHEF = ../4p5p-newtest3.lhe
+
+#Main:eventTypes = {matched_n0lo_2,matched_n1lo_2,matched_n2lo_2,matched_n3lo_2,matched_n0lo_3,matched_n1lo_3,matched_n2lo_3,matched_n1lo_3_2,matched_n2lo_3_2,matched_n3lo_3_2,matched_n0lo_4,matched_n1lo_4,matched_n2lo_4_2,matched_n3lo_4_2,matched_n2lo_4_3_2,matched_n3lo_4_3_2,matched_n0lo_5,matched_n1lo_5_4,matched_n1lo_4_3,matched_n2lo_4_3,matched_n2lo_5_4_3,matched_n2lo_5_3,matched_n3lo_5_2,matched_n3lo_5_4_2}
+Main:eventTypes = {matched_n0lo_2,matched_n1lo_2,matched_n2lo_2,matched_n3lo_2,matched_n0lo_3,matched_n1lo_3_2,matched_n1lo_3,matched_n2lo_3_2,matched_n2lo_3,matched_n3lo_3_2,matched_n0lo_4,matched_n1lo_4_3,matched_n1lo_4,matched_n2lo_4_3,matched_n2lo_4_2,matched_n2lo_4_3_2,matched_n3lo_4_2,matched_n3lo_4_3_2,matched_n0lo_5,matched_n1lo_5_4,matched_n2lo_5_4_3,matched_n3lo_5_4_2,matched_n2lo_5_3,matched_n3lo_5_2}
+#Main:eventTypes = {matched_n0lo_2,matched_n1lo_2,matched_n2lo_2,matched_n3lo_2,matched_n0lo_3,matched_n1lo_3_2}
+#,matched_n1lo_3,matched_n2lo_3_2,matched_n2lo_3,matched_n3lo_3_2}
+#,matched_n0lo_4,matched_n1lo_4_3}
+#,matched_n0lo_4,matched_n1lo_4_3,matched_n2lo_4_2,matched_n2lo_4_3_2,matched_n1lo_4,matched_n2lo_4_3,matched_n3lo_4_2,matched_n3lo_4_3_2}
+#Main:eventTypes = {matched_n0lo_2}
+#Beams:LHEF = ../2p3p4p5p-full-histstats-fix.lhe
+Beams:LHEF = ../2p3p4p5p-noas-histstats.lhe
+
+
+
+
+
+

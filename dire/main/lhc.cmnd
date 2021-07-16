@@ -1,0 +1,94 @@
+
+# Number of events to generate.
+Main:numberOfEvents       = 10000
+
+# Set PDFs for hard process and showering.
+#PDF:useHard               = on
+#PDF:pSet                  = LHAPDF6:CT10nlo 
+#PDF:pHardSet              = LHAPDF6:CT10nlo
+
+# Set alphaS(mZ) value and running.
+SpaceShower:alphaSvalue   = 0.1201
+TimeShower:alphaSvalue    = 0.1201
+SpaceShower:alphaSorder   = 2
+TimeShower:alphaSorder    = 2
+
+# LHC beam setup
+Beams:idA                 = 2212
+Beams:idB                 = 2212
+Beams:eCM                 = 1300.
+# Example: Neutral-current Drell-Yan e+e- production
+WeakSingleBoson:ffbar2gmZ = on
+23:onMode                 = off
+23:onIfAny                = 11 -11 
+PhaseSpace:mHatMin        = 50.
+# Example: Charged-current Drell-Yan light lepton-neutrino production
+#WeakSingleBoson:ffbar2W   = on
+#24:onMode                 = off
+#24:onIfAny                = 11 12 -11 -12 
+#Example: Higgs-boson production in gluon fusion, with decay to tau leptons
+#HiggsSM:gg2H              = on
+#25:onMode                 = off
+#25:onIfAny                = 15 -15
+
+# Use masses of PDF sets also for shower evolution.
+# Note: Only correctly handled when using external PDF sets from LHAPDF
+ShowerPDF:usePDFalphas    = off
+ShowerPDF:useSummedPDF    = on
+ShowerPDF:usePDFmasses    = off
+DireSpace:forceMassiveMap = on
+
+# Do not use "power shower".
+SpaceShower:pTmaxMatch    = 1
+TimeShower:pTmaxMatch     = 1
+
+# Use NLO corrections to timelike evolution.
+#DireTimes:kernelOrder = 3
+# Use NLO corrections to spacelike evolution.
+#DireSpace:kernelOrder = 3
+
+# Vary renormalization scale used in shower.
+#Variations:doVariations = on 
+#Variations:muRisrDown = 0.25
+#Variations:muRisrUp   = 4.0
+#Variations:muRfsrDown = 0.25
+#Variations:muRfsrUp   = 4.0
+
+# Switch off event generation steps
+#PartonLevel:MPI              = off
+#PartonLevel:FSR              = off
+#PartonLevel:ISR              = off
+#HadronLevel:all              = off
+#BeamRemnants:primordialKT    = off
+#PartonLevel:Remnants         = off
+#Check:event                  = off
+#TimeShower:QEDshowerByQ      = off
+#TimeShower:QEDshowerByL      = off
+#SpaceShower:QEDshowerByQ     = off
+#SpaceShower:QEDshowerByL     = off
+#PartonLevel:FSRinResonances  = off
+#ProcessLevel:resonanceDecays = off
+
+## Merging and Madgraph settings.
+#Dire:doMECs     = on
+# Example: Process for WeakSingleBoson:ffbar2gmZ
+#Dire:MG5card    = param_card_sm.dat
+#Merging:Process = pp>z
+# Example: Process for WeakSingleBoson:ffbar2W 
+#Dire:MG5card    = param_card_sm.dat
+#Merging:Process = pp>W
+# Example: Process for HiggsSM:gg2H 
+#Dire:MG5card    = param_card_heft.dat
+#Merging:Process = pp>h
+# For all examples above, ignore decay products in MECs
+#Merging:mayRemoveDecayProducts = on
+# Limit MECs to large pTs
+#Dire:ptminmecs  = 3.0
+# Force quarks to be massless, as required by ME code.
+#1:m0            = 0.
+#2:m0            = 0.
+#3:m0            = 0.
+#4:m0            = 0.
+#5:m0            = 0.
+#6:mMin          = 165.0
+#6:mMax          = 177.0

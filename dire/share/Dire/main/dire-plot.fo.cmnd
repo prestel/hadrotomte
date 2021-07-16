@@ -1,0 +1,50 @@
+
+Main:numberOfEvents         = -1 ! number of events generated
+Beams:frameType             = 4
+Check:epTolErr               = 1e-2
+
+# Switch off event generation steps
+PartonLevel:MPI              = off
+PartonLevel:FSR              = off
+PartonLevel:ISR              = off
+HadronLevel:all              = off
+BeamRemnants:primordialKT    = off
+PartonLevel:Remnants         = off
+Check:event                  = off
+TimeShower:QEDshowerByQ      = off
+TimeShower:QEDshowerByL      = off
+SpaceShower:QEDshowerByQ     = off
+SpaceShower:QEDshowerByL     = off
+PartonLevel:FSRinResonances  = off
+ProcessLevel:resonanceDecays = off
+LesHouches:setQuarkMass        = 0
+LesHouches:setLeptonMass       = 0
+LesHouches:matchInOut          = off
+
+Main:isFixedOrder = on
+#Beams:LHEF = ../n3lo-4p-combined-sample.lhe
+#Beams:LHEF = ../n3lo-5p-test-nocut.lhe
+#Beams:LHEF = ../n3lo-5p-test4.lhe
+
+#Main:eventTypes = {n0lo_3,n1lo_3,n2lo_3}
+#Beams:LHEF = ../n3lo-3p-combined-sample.lhe
+
+Main:eventTypes = {n0lo_4,n1lo_4}
+Beams:LHEF = ../n3lo-4p-exclusive-sample.lhe
+
+
+
+
+
+# for LHE level fixed-order plots
+#Main:eventTypes = {n0lo_5}
+#Beams:LHEF = ../n3lo-5p-lhe-rwgt.lhe
+
+#Main:eventTypes = {n0lo_4,n1lo_4}
+#Beams:LHEF = ../n3lo-4p-lhe-rwgt.lhe
+
+#Main:eventTypes = {n0lo_3,n1lo_3,n2lo_3}
+#Beams:LHEF = ../n3lo-3p-lhe-rwgt.lhe
+
+#Main:eventTypes = {n0lo_2,n1lo_2,n2lo_2,n3lo_2}
+#Beams:LHEF = ../n3lo-2p-lhe-rwgt.lhe

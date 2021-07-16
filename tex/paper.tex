@@ -1,0 +1,1001 @@
+\documentclass[a4paper,11pt]{article}
+\pdfoutput=1 
+\usepackage{jheppub} 
+
+\usepackage{hyperref}
+\usepackage{amsmath,slashed}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{relsize}
+\usepackage{mathtools}
+
+\usepackage{empheq}
+\usepackage{amssymb}
+\usepackage{longtable}
+
+\hyphenation{pro-pa-ga-tors}
+\hyphenation{func-tions}
+\newcommand{\rig}{\rightarrow}
+\newcommand{\lrig}{\longrightarrow}
+\renewcommand{\d}{{\mathrm{d}}}
+\newcommand{\be}{\begin{eqnarray*}}
+\newcommand{\ee}{\end{eqnarray*}}
+\newcommand{\gl}[1]{(\ref{#1})}
+\newcommand{\ta}[2]{ \frac{ {\mathrm{d}} #1 } {{\mathrm{d}} #2}}
+\newcommand{\bee}{\begin{eqnarray}}
+\newcommand{\eee}{\end{eqnarray}}
+\newcommand{\beeq}{\begin{equation}}
+\newcommand{\eeeq}{\end{equation}}
+\newcommand{\gev}{{\rm{GeV}}}
+\newcommand{\GeV}{~GeV}
+\newcommand{\tev}{{\rm{TeV}}}
+\newcommand{\fb}{{\rm{fb}}}
+\newcommand{\ifb}{{\rm{fb}}^{-1}}
+\newcommand{\pb}{{\rm{pb}}}
+\newcommand{\mc}{\mathcal}
+\newcommand{\mr}{\mathrm}
+\newcommand{\ep}{\varepsilon}
+\newcommand{\pt}{p_{\rm{T}}}
+\newcommand{\mksmall}[1]{\textnormal{\smaller$#1$}}
+
+\newcommand{\obs}[1]{\mathrm{O}_{#1}}
+
+\newcommand{\one}[2]{\mathds{1}^{#1}_{#2}}
+
+\newcommand{\dire}{\textsc{Dire}\;}
+\newcommand{\pythia}{\textsc{Pythia}\;}
+
+\newcommand{\nnnlo}{\textnormal{\smaller N3LO}}
+\newcommand{\nnlo}{\textnormal{\smaller NNLO}}
+\newcommand{\nlo}{\textnormal{\smaller NLO}}
+\newcommand{\qcd}{\textnormal{\smaller QCD}}
+\newcommand{\pdf}{\textnormal{\smaller PDF}}
+
+
+\newcommand{\sgn}[2]{\mathrm{sgn}\left(#1-#2\right)}
+\newcommand{\xfhathat}[3]{#2 \widehat{\widehat{f}}_{#1}\left(#2, #3\right)}
+\newcommand{\xfhat}[3]{#2 \widehat{f}_{#1}\left(#2, #3\right)}
+\newcommand{\xftilde}[3]{#2 \widetilde{f}_{#1}\left(#2, #3\right)}
+\newcommand{\xftildezero}[3]{#2 \widetilde{f}_{#1}^{(0)}\left(#2, #3\right)}
+\newcommand{\xftildeone}[3]{#2 \widetilde{f}_{#1}^{(1)}\left(#2, #3\right)}
+\newcommand{\xf}[3]{#2 f_{#1}\left(#2, #3\right)}
+\newcommand{\noem}[4]{\Pi_{#1}\left(#2; #3, #4\right)}
+\newcommand{\psasarg}[2]{t_{[#1]}(#2)}
+\newcommand{\psas}[2]{\frac{\alpha_s( t_{[#1]}(#2) )}{2\pi}}
+\newcommand{\pskernel}[3]{K_{#1\rightarrow #2}\left(#3\right)}
+\newcommand{\dglapkernel}[3]{P_{#1\leftarrow #2}\left(#3\right)}
+
+\newcommand{\lodglapkernel}[3]{P_{#1\leftarrow #2}^{(0)}\left(#3\right)}
+\newcommand{\nlodglapkernel}[3]{P_{#1\leftarrow #2}^{(1)}\left(#3\right)}
+
+\newcommand{\lopskernel}[3]{K_{#1\rightarrow #2}^{(0)}\left(#3\right)}
+\newcommand{\nlopskernel}[3]{K_{#1\rightarrow #2}^{(1)}\left(#3\right)}
+
+\newcommand{\nlopps}{\textnormal{{\smaller NLO}+{\smaller PS}}}
+\newcommand{\nnlopps}{\textnormal{{\smaller NNLO}+{\smaller PS}}}
+\newcommand{\nnnlopps}{\textnormal{{\smaller N3LO}+{\smaller PS}}}
+
+\newcommand{\BLO}[1]{{\mathrm{B}_{#1}^{(0)}(\Phi_{#1})}}
+\newcommand{\BPS}[1]{{\mathrm{B}^\mathrm{PS}_{#1}(\Phi_{#1})}}
+\newcommand{\BNLOI}[1]{{{\mathrm{B}}_{#1}^{(1)}(\Phi_{#1})}}
+\newcommand{\BNNLOI}[1]{{ \mathrm{B}_{#1}^{(2)}(\Phi_{#1})}}
+\newcommand{\BNNNLOI}[1]{ \mathrm{B}_{#1}^{(3)}(\Phi_{#1})}
+%\newcommand{\BUNLOPS}[1]{{\mathrm{B}^\mathrm{UNLOPS}_{#1}(\Phi_{#1})}}
+
+\newcommand{\BNNNLOV}[1]{ \mathrm{B}_{#1}^{(3) t_c}(\Phi_{#1})}
+
+\let\ss\undefined
+\let\i\undefined
+\newcommand{\ff}[5]{ {#1}_{#2}^{(#3) \left[\textnormal{\smaller$#4$}\right]}(#5)}
+\newcommand{\ss}[4]{ d\sigma_{#1}^{(#2) \left[\textnormal{\smaller$#3$}\right]}(#4)}
+\newcommand{\f}[4]{ {#1}_{#2}^{(#3)}(#4)}
+\newcommand{\s}[3]{ d\sigma_{#1}^{(#2)}(#3)}
+\newcommand{\w}[1]{ w_{#1}(\Phi_{#1})}
+
+%\newcommand{\ss}[4]{ \frac{d\sigma_{#1}^{(#2) \left[\textnormal{\smaller$#3$}\right]}}{d\Phi_{#1}}(#4)}
+%\newcommand{\s}[3]{ \frac{d\sigma_{#1}^{(#2)}}{d\Phi_{#1}}(#3)}
+
+\newcommand{\i}[1]{ \int \mathrm{d}\Phi_{#1}}
+
+\newcommand{\unlops}{\textnormal{\smaller UNLOPS}}
+\newcommand{\unnlops}{\textnormal{\smaller UN$^2$LOPS}}
+
+\newcommand{\nnnlops}{\textnormal{\textsc{Tomte}}}
+
+\newcommand{\BUNLOPS}[1]{{\mathrm{B}^{\unlops}_{#1}(\Phi_{#1})}}
+\newcommand{\BUNNLOPS}[1]{{\mathrm{B}^{\unnlops}_{#1}(\Phi_{#1})}}
+
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+
+\newcommand{\cp}{${\cal{CP}}$}
+\newcommand{\cpeven}{${\cal{CP}}$-even }
+\newcommand{\cpodd}{${\cal{CP}}$-odd }
+\newcommand{\emt}{$\times 10^{-3}$}
+\newcommand{\emfo}{$\times 10^{-4}$}
+\newcommand{\emfi}{$\times 10^{-5}$}
+
+\usepackage{tikz}
+\usetikzlibrary{tikzmark}
+\usetikzlibrary{calc} 
+\usetikzlibrary{decorations.pathmorphing}
+
+\usepackage{tikz-feynman}
+\tikzfeynmanset{compat=1.0.0}
+
+\tikzstyle{description} = [rectangle, minimum width=1cm, minimum height=0.5cm, draw=black, fill=green!05, inner sep=2pt, inner ysep=2pt, inner xsep=2pt]
+\tikzstyle{nobox} = [rectangle, minimum width=0cm, minimum height=0.0cm, text centered, draw=black!00, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{box} = [rectangle, minimum width=0cm, minimum height=0.0cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{circ} = [circle, minimum width=0cm, minimum height=0.0cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+\tikzstyle{fixedbox15} = [rectangle, minimum width=1.5cm, minimum height=1.5cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{fixedbox11} = [rectangle, minimum width=1.1cm, minimum height=1.1cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{fixedbox10} = [rectangle, minimum width=1.0cm, minimum height=1.0cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{fixedbox09} = [rectangle, minimum width=0.9cm, minimum height=0.9cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{fixedbox08} = [rectangle, minimum width=0.8cm, minimum height=0.8cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{fixedbox07} = [rectangle, minimum width=0.7cm, minimum height=0.7cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{fixedbox06} = [rectangle, minimum width=0.6cm, minimum height=0.6cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+\tikzstyle{fixedbox05} = [rectangle, minimum width=0.5cm, minimum height=0.5cm, text centered, draw=black, fill=black!00, inner sep=1pt, inner ysep=1pt]
+
+
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
+
+\tcbsetforeverylayer{arc=0pt,outer arc=0pt,top=0pt,bottom=0pt,left=0pt,right=0pt,colback=black!10,colframe=black, boxrule=0.1pt, boxsep=0.1pt}
+\tcbuselibrary{skins}
+\tcbsetforeverylayer{skin=enhanced}
+
+\usepackage{amsfonts}
+
+\usepackage{color}
+\newcommand{\LGC}[1]{{\color{red}{LG:~#1}}}
+
+\newcommand{\SPC}[1]{{\color{blue}{\it SP:~#1}}}
+
+\usepackage{cleveref}
+\usepackage{dsfont}
+\newcommand{\B}{\mathds{B}}
+
+\definecolor{mypurple}{rgb}{0.8,0.1,0.7}
+
+\definecolor{myolive}{rgb}{0.2,0.45,0.25}
+\newcommand{\olive}{\textcolor{myolive}}
+
+\definecolor{mybrown}{rgb}{0.54,0.27,0.07}
+\newcommand{\brown}{\textcolor{mybrown}}
+
+\definecolor{mymidgrey}{rgb}{0.5,0.5,0.5}
+\newcommand{\midgrey}{\textcolor{mymidgrey}}
+
+\definecolor{mywhite}{rgb}{1.0,1.0,1.0}
+\newcommand{\white}{\textcolor{mywhite}}
+
+\makeatletter
+\newenvironment{nonfloatfig}{\par\noindent\minipage{\textwidth}
+\def\@captype{table}%
+\centering\medskip}{\medskip\endminipage}
+\makeatother
+
+\allowdisplaybreaks
+
+\makeatletter
+\def\upintkern@{\mkern-7mu\mathchoice{\mkern-3.5mu}{}{}{}}
+\def\upintdots@{\mathchoice{\mkern-4mu\@cdots\mkern-4mu}%
+ {{\cdotp}\mkern1.5mu{\cdotp}\mkern1.5mu{\cdotp}}%
+ {{\cdotp}\mkern1mu{\cdotp}\mkern1mu{\cdotp}}%
+ {{\cdotp}\mkern1mu{\cdotp}\mkern1mu{\cdotp}}}
+\newcommand{\upiint}{\DOTSI\protect\UpMultiIntegral{2}}
+\newcommand{\upiiint}{\DOTSI\protect\UpMultiIntegral{3}}
+\newcommand{\upiiiint}{\DOTSI\protect\UpMultiIntegral{4}}
+\newcommand{\upidotsint}{\DOTSI\protect\UpMultiIntegral{0}}
+\newcommand{\UpMultiIntegral}[1]{%
+  \edef\ints@c{\noexpand\upintop
+    \ifnum#1=\z@\noexpand\upintdots@\else\noexpand\upintkern@\fi
+    \ifnum#1>\tw@\noexpand\upintop\noexpand\upintkern@\fi
+    \ifnum#1>\thr@@\noexpand\upintop\noexpand\upintkern@\fi
+    \noexpand\upintop
+    \noexpand\ilimits@
+  }%
+  \futurelet\@let@token\ints@a
+}
+\makeatother
+
+\DeclareFontFamily{OMX}{mdbch}{}
+\DeclareFontShape{OMX}{mdbch}{m}{n}{ <->s * [0.8]  mdbchr7v }{}
+\DeclareFontShape{OMX}{mdbch}{b}{n}{ <->s * [0.8]  mdbchb7v }{}
+\DeclareFontShape{OMX}{mdbch}{bx}{n}{<->ssub * mdbch/b/n}{}
+
+\DeclareSymbolFont{uplargesymbols}{OMX}{mdbch}{m}{n}
+\SetSymbolFont{uplargesymbols}{bold}{OMX}{mdbch}{b}{n}
+\DeclareMathSymbol{\upintop}{\mathop}{uplargesymbols}{82}
+\DeclareMathSymbol{\upointop}{\mathop}{uplargesymbols}{"48}
+
+\DeclareFontEncoding{MDB}{}{}
+\DeclareFontFamily{MDB}{mdbch}{}
+\DeclareFontShape{MDB}{mdbch}{m}{n}{ <->s * [0.8]  mdbchrmb }{}
+\DeclareFontShape{MDB}{mdbch}{b}{n}{ <->s * [0.8]  mdbchbmb }{}
+\DeclareFontShape{MDB}{mdbch}{bx}{n}{<->ssub * mdbch/b/n}{}
+\DeclareFontSubstitution{MDB}{cmr}{m}{n}
+\DeclareSymbolFont{mathdesignB}{MDB}{mdbch}{m}{n}%
+\SetSymbolFont{mathdesignB}{bold}{MDB}{mdbch}{b}{n}%
+\DeclareMathSymbol{\upintclockwise}{\mathop}{mathdesignB}{128}
+\DeclareMathSymbol{\upointclockwise}{\mathop}{mathdesignB}{130}
+\DeclareMathSymbol{\upointctrclockwise}{\mathop}{mathdesignB}{132}
+\DeclareMathSymbol{\upoiint}{\mathop}{mathdesignB}{134}
+\DeclareMathSymbol{\upoiiint}{\mathop}{mathdesignB}{136}
+
+\makeatletter
+\newcommand{\upint}{\DOTSI\upintop\ilimits@}
+\newcommand{\upoint}{\DOTSI\upointop\ilimits@}
+
+\newcommand{\intOne}{\mathop{\mathlarger{\upoint\displaylimits^{t^+}_{t^-}}}}
+\newcommand{\intTwo}{\mathop{\mathlarger{\upoiint\displaylimits^{t^+}_{t^-}}}}
+\newcommand{\intThree}{\mathop{\mathlarger{\upoiiint\displaylimits^{t^+}_{t^-}}}}
+\renewcommand{\int}{\mathop{\mathlarger{\upint}}}
+
+%\makeatother
+
+\raggedbottom
+
+\begin{document}
+
+\title{N3LO+PS matching with incoming hadrons}
+
+
+\abstract{
+bla
+}
+
+\author[a]{Stefan Prestel}
+\affiliation[a]{Department of Astronomy and Theoretical Physics,\\Lund University, S-223 62 Lund, Sweden}
+
+\emailAdd{stefan.prestel@thep.lu.se}
+
+%comment out for jhep
+%\pacs{}
+
+\preprint{LU-TP-21-21, MCNET-21-10}
+\vspace*{4ex}
+
+%\maketitle
+
+% avoid new page after title page
+\maketitle
+
+
+
+
+\section{Definitions}
+\label{sec:definitions}
+
+The second-order expansion of the CKKW-L weight is desired
+\begin{eqnarray}
+w &=& 
+\frac{ \xf{0+}{x_0^+}{t_0} }{ \xf{0+}{x_0^+}{t_1} }
+\frac{\xf{0-}{x_0^-}{t_0}}{\xf{0-}{x_0^-}{t_1}}
+\frac{\xf{1+}{x_1^+}{t_1}}{\xf{1+}{x_1^+}{\mu_f}}
+\frac{\xf{1-}{x_1^-}{t_1}}{\xf{1-}{x_1^-}{\mu_f}}\\
+&&
+%
+\frac{\alpha_s(t_1)}{\alpha_s(\mu_r)}
+\noem{0+}{x_0^+}{t_0}{t_1}
+\noem{0-}{x_0^-}{t_0}{t_1}
+\prod_{f\in FS} \noem{f}{x_0^+,x_0^-}{t_0}{t_1}
+\end{eqnarray}
+where
+\begin{eqnarray}
+\noem{0\pm}{x}{t_0}{t_1} &=& \mksmall{\exp\Bigg(- \int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \sum\limits_{s} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz \psas{0\pm,i\pm(s),r}{\rho,z,m_{0\pm,r}^2}}
+\\\nonumber
+&&\qquad\qquad\qquad\qquad\qquad \mksmall{\frac{\xf{i\pm(s)}{\frac{x}{z}}{\rho}}{\xf{0\pm}{x}{\rho}} 
+\pskernel{0\pm}{i\pm(s)}{z,\rho,m_{i,r}^2}
+\Bigg)}
+\end{eqnarray}
+where $\sum_{r}$ runs over all possible recoilers and $\sum_{s}$ runs over all possible (QCD, QED\dots) splittings. The phase-space boundaries $\Omega_{i,r,s}(x,\rho)$ may depend on the splitting, as can the argument of the strong coupling. The factors $\noem{f}{x_0^+,x_0^-}{t_0}{t_1}$ relate to final-state emissions, and can be written as
+\begin{eqnarray}
+\noem{f}{x}{t_0}{t_1} &=& \mksmall{\exp\Bigg(- \int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r\not\in \{+,-\}} \sum\limits_{s} \int\displaylimits_{\Omega_{f,r,s}(\rho)} dz \frac{\alpha_s(t)}{2\pi}
+\pskernel{f}{f'(s)}{z,\rho,m_{f,r}^2}}\\\nonumber
+&&\qquad 
+\mksmall{- \int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r\in \{+,-\}} \sum\limits_{s} \int\displaylimits_{\Omega_{f,r,s}(\rho)} dz \frac{\alpha_s(t)}{2\pi}
+\frac{\xf{r}{x'(z,\rho,m_{f,r}^2)}{\rho}}{\xf{r}{x}{\rho}} 
+\pskernel{f}{f'(s)}{z,\rho,m_{i,r}^2}
+\Bigg)}
+\end{eqnarray}
+Now introduce the short-hands
+\begin{eqnarray}
+\xfhat{a}{\frac{x}{z}}{\mu} &=& \sum\limits_{b=q,g} \dglapkernel{a}{b}{z}  \xf{b}{\frac{x}{z}}{\mu}\\
+\xfhathat{a}{\frac{x}{zz'}}{\mu} &=& \sum\limits_{b=q,g}  \dglapkernel{a}{b}{z}  \sum\limits_{c=q,g} \dglapkernel{b}{c}{z'}  \xf{c}{\frac{x}{zz'}}{\mu}\\
+\xftilde{a}{\frac{x}{z}}{\mu} &=& \sum\limits_s \pskernel{a}{b(s)}{z}  \xf{b(s)}{\frac{x}{z}}{\mu} \approx \sum\limits_b \dglapkernel{b}{a}{z}  \xf{b}{\frac{x}{z}}{\mu}
+\end{eqnarray}
+with which we have
+\begin{eqnarray}
+\noem{0\pm}{x}{t_0}{t_1} = \exp\left(- \int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz \frac{\alpha_s(t)}{2\pi} \frac{\xftilde{0\pm}{\frac{x}{z}}{\rho}}{\xf{0\pm}{x}{\rho}} 
+\right)
+\end{eqnarray}
+
+
+\section{Second-order expansion}
+\label{sec:expansion}
+
+For cases with incoming hadrons, the expansion in $\alpha_s(\mu_r)$ is understood as expansion at fixed $\mu_f$.
+It makes sense to start with the second-order expansion of PDF ratios, since PDF ratios also appear in the no-emission probabilities. The strategy will be
+\begin{itemize}
+\item Extract $\mathcal{O}(\alpha_s^2(\mu_r))$ terms at fixed factorization scale $\mu_f$
+\item For that, evolve both numerator and denominator to $\mu_f$, and expand the fraction.
+\end{itemize}
+The $\alpha_s(\mu_r)$-expansion of a PDF, assuming the phase-space limits $C(x)$ (typically $C(x)=\{z>x \cap z<1\}$) and using
+\begin{eqnarray*}
+\sgn{\mu}{\mu_f} =
+\begin{cases}
+-1 & \textnormal{~if~} \mu_f>\mu\\
+1 & \textnormal{~else} 
+\end{cases}
+\end{eqnarray*}
+is given by
+\begin{eqnarray*}
+\xf{a}{x}{\mu} 
+&=&
+\xf{a}{x}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \frac{\alpha_s(\bar\mu)}{2\pi}
+\int\displaylimits_{C(x)}  dz \xfhat{a}{\frac{x}{z}}{\bar\mu} 
+\\&=&
+\xf{a}{x}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \frac{\alpha_s(\bar\mu)}{2\pi}
+\int\displaylimits_{C(x)}  dz \xfhat{a}{\frac{x}{z}}{\mu_f} 
+\\&&
++
+\mksmall{\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \frac{\alpha_s(\bar\mu)}{2\pi}
+\int\displaylimits_{C(x)}  dz 
+~\sgn{\bar\mu}{\mu_f}
+\int\displaylimits_{\min(\bar\mu,\mu_f) }^{\max(\bar\mu,\mu_f)}\frac{d\bar\mu'}{\bar\mu'} \frac{\alpha_s(\bar\mu')}{2\pi}
+\int\displaylimits_{C(x/z)}  dz'
+\xfhathat{a}{\frac{x}{zz'}}{\bar\mu'} }
+\\&=&
+\xf{a}{x}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \frac{\alpha_s(\mu_r)}{2\pi}
+\int\displaylimits_{C(x)}  dz \xfhat{a,(0)}{\frac{x}{z}}{\mu_f} 
+\\&&
++
+\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2\frac{\beta_0}{2}\ln\left(\frac{\mu_r}{\bar\mu}\right)
+\int\displaylimits_{C(x)}  dz \xfhat{a,(0)}{\frac{x}{z}}{\mu_f} 
+\\&&
++
+\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\int\displaylimits_{C(x)}  dz \xfhat{a,(1)}{\frac{x}{z}}{\mu_f}
+\\&&
++
+\mksmall{\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\int\displaylimits_{C(x)}  dz 
+~\sgn{\bar\mu}{\mu_f}
+\int\displaylimits_{\min(\bar\mu,\mu_f) }^{\max(\bar\mu,\mu_f)}\frac{d\bar\mu'}{\bar\mu'}
+\int\displaylimits_{C(x/z)}  dz'
+\xfhathat{a}{\frac{x}{zz'}}{\mu_f} }
+\\&&
++
+\mathcal{O}(\alpha_s^3(\mu_r))
+%
+%
+%
+%
+%
+%
+\\&=&
+\xf{a}{x}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \frac{\alpha_s(\mu_r)}{2\pi}
+\int\displaylimits_{C(x)}  dz
+%\xfhat{a,(0)}{\frac{x}{z}}{\mu_f} 
+\sum\limits_{b=q,g} \lodglapkernel{a}{b}{z}  \xf{b}{\frac{x}{z}}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2\frac{\beta_0}{2}\ln\left(\frac{\mu_r}{\bar\mu}\right)
+\int\displaylimits_{C(x)}  dz
+\sum\limits_{b=q,g} \lodglapkernel{a}{b}{z}  \xf{b}{\frac{x}{z}}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\sum\limits_{b=q,g} \nlodglapkernel{a}{b}{z}  \xf{b}{\frac{x}{z}}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f}
+\int\displaylimits_{\min(\mu,\mu_f) }^{\max(\mu,\mu_f)}\frac{d\bar\mu}{\bar\mu} \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+~\sgn{\bar\mu}{\mu_f}
+\int\displaylimits_{\min(\bar\mu,\mu_f) }^{\max(\bar\mu,\mu_f)}\frac{d\bar\mu'}{\bar\mu'}
+\\&&
+\qquad\qquad\qquad\quad
+\int\displaylimits_{C(x)}  dz 
+\sum\limits_{b=q,g}  \lodglapkernel{a}{b}{z} 
+\int\displaylimits_{C(x/z)}  dz'
+%\xfhathat{a}{\frac{x}{zz'}}{\mu_f}
+ \sum\limits_{c=q,g} \lodglapkernel{b}{c}{z'}  \xf{c}{\frac{x}{zz'}}{\mu_f}
+\\&&
++
+\mathcal{O}(\alpha_s^3(\mu_r))
+%
+%
+%
+%
+%
+%
+\\&=&
+\xf{a}{x}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f} \ln\left[\frac{\max(\mu,\mu_f)}{\min(\mu,\mu_f)}\right]\frac{\alpha_s(\mu_r)}{2\pi}
+\int\displaylimits_{C(x)}  dz
+%\xfhat{a,(0)}{\frac{x}{z}}{\mu_f} 
+\sum\limits_{b=q,g} \lodglapkernel{a}{b}{z}  \xf{b}{\frac{x}{z}}{\mu_f}
+\\&&
+-
+\sgn{\mu}{\mu_f}
+\frac{1}{2}
+\left[
+\mksmall{\ln^2\left[\frac{\max(\mu,\mu_f)}{\mu_r}\right] - \ln^2\left[\frac{\min(\mu,\mu_f)}{\mu_r}\right]}
+\right]
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\\&&
+\qquad\qquad\qquad\quad
+\frac{\beta_0}{2}
+\int\displaylimits_{C(x)}  dz
+\sum\limits_{b=q,g} \lodglapkernel{a}{b}{z}  \xf{b}{\frac{x}{z}}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f}
+\ln\left[\frac{\max(\mu,\mu_f)}{\min(\mu,\mu_f)}\right] \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\sum\limits_{b=q,g} \nlodglapkernel{a}{b}{z}  \xf{b}{\frac{x}{z}}{\mu_f}
+\\&&
++
+\sgn{\mu}{\mu_f}
+\frac{1}{2}
+\left[
+\mksmall{\ln^2\left[\frac{\max(\mu,\mu_f)}{\mu_f}\right] - \ln^2\left[\frac{\min(\mu,\mu_f)}{\mu_f}\right]}
+\right] \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\\&&
+\qquad\qquad\qquad\quad
+\int\displaylimits_{C(x)}  dz 
+\sum\limits_{b=q,g}  \lodglapkernel{a}{b}{z} 
+\int\displaylimits_{C(x/z)}  dz'
+%\xfhathat{a}{\frac{x}{zz'}}{\mu_f}
+ \sum\limits_{c=q,g} \lodglapkernel{b}{c}{z'}  \xf{c}{\frac{x}{zz'}}{\mu_f}
+\\&&
++
+\mathcal{O}(\alpha_s^3(\mu_r))
+\end{eqnarray*}
+The CKKW-L weight contains ratios of all-order factors. To expand a ratio of $\alpha_s$-expansions, use
+\begin{eqnarray*}
+\mksmall{\frac{\sum_{n=0}^\infty \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^n a_n }{ \sum_{n=0}^\infty \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^n b_n  }
+=
+\frac{a_0}{b_0}
++
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right) \left( \frac{a_1}{b_0} - \frac{a_0}{b_0} \frac{b_1}{b_0} \right) 
++
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2 \left( \frac{a_2}{b_0} - \frac{a_0}{b_0} \frac{b_2}{b_0} +   \frac{a_0}{b_0}  \frac{b_1^2}{b_0^2} -  \frac{a_1}{b_0} \frac{b_1}{b_0} \right) 
++ \mathcal{O}(\alpha_s^3(\mu_r))}
+\end{eqnarray*}
+In the case of several numerator or denominator factors, cross-terms of their expansions will arise at $\mathcal{O}(\alpha_s^2)$. Thus, it is useful to apply this expression to the CKKW-L weight in question. In the expansion of the CKKW-L weight, it is safe to assume $a_0=b_0=\xf{0+}{x_0^+}{\mu_f} \cdot \xf{0-}{x_0^-}{\mu_f}$$\cdot\xf{1+}{x_1^+}{\mu_f} \cdot \xf{1-}{x_1^-}{\mu_f}$, since
+\begin{eqnarray*}
+\mksmall{\frac{\alpha_s(t_1)}{\alpha_s(\mu_r)} = 1 + \left(\frac{\alpha_s(\mu_r)}{2\pi}\right) \frac{\beta_0}{2}\ln\left(\frac{\mu_r}{t_1}\right)
++  \left[\left(\frac{\alpha_s(\mu_r)}{2\pi}\right) \frac{\beta_0}{2}\ln\left(\frac{\mu_r}{t_1}\right)\right]^2
++  \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2 \frac{\beta_1}{4}\ln\left(\frac{\mu_r}{t_1}\right)
++ \mathcal{O}(\alpha_s^3(\mu_r))~,}
+\end{eqnarray*}
+that each individual PDF ratios is of identical flavor/x-value, and that
+\begin{eqnarray*}
+\noem{i}{x}{t_0}{t_1} = 1 
++ \mathcal{O}(\alpha_s(\mu_r))~.
+\end{eqnarray*}
+The coefficients $a_1$ and $a_2$ of the numerator expansion can be obtained by expanding all numerator factors, multiplying the expansions, and grouping the relevant terms.
+For the structure of the CKKW-L weight in question, and given that the third and fourth PDF ratios contain denominators already evaluated at $\mu_f$, i.e. $b_{1\{3,4\}}=b_{2\{3,4\}}=0$, this means that the expansion of the CKKW-L weight takes the form
+\begin{eqnarray*}
+&&
+\mksmall{
+\frac{(b_{01} + a_{11} x + a_{21} x^2) (b_{02} + a_{12} x + a_{22} x^2) (b_{03} + a_{13} x + a_{23} x^2) (b_{04} + a_{14} x + a_{24} x^2) \prod_{i=1}^N (1 + w_{1i} x +w_{2i} x^2)} {
+(b_{01} + b_{11} x + b_{21} x^2 ) (b_{02} + b_{12} x + b_{22} x^2 ) b_{03}  b_{04}}
+}
+%\\&&\quad
+%\mksmall{
+%= 1
+%+ x \left[\frac{a_{11}}{b_{01}} + \frac{a_{12}}{b_{02}} + \frac{a_{13}}{b_{03}} + \frac{a_{14}}{b_{04}} + \sum_{i=1}^N w_{1i}  - \frac{b_{11}}{b_{01}} - \frac{b_{12}}{b_{02}}  \right]}
+%\\&&\quad
+%\mksmall{
+%+ x^2 \Bigg[
+%  \frac{a_{11}}{b_{01}} \frac{a_{14}}{b_{04}} + \frac{a_{12}}{b_{02}} \frac{a_{14}}{b_{04}} + \frac{a_{13}}{b_{03}} \frac{a_{14}}{b_{04}} + \frac{a_{11}}{b_{01}} \frac{a_{13}}{b_{03}} + \frac{a_{12}}{b_{02}} \frac{a_{13}}{b_{03}} + \frac{a_{12}}{b_{02}} \frac{a_{11}}{b_{01}}}
+%\\&&\quad
+%\mksmall{
+%+ \frac{b_{11}^2}{b_{01}^2}
+%+ \frac{b_{12}^2}{b_{02}^2}
+%+ \frac{b_{11} b_{12} }{(b_{01} b_{02})}
+%+ \frac{a_{21}}{b_{01}} + \frac{a_{22}}{b_{02}} + \frac{a_{23}}{b_{03}} + \frac{a_{24}}{b_{04}}}
+%\\&&\quad
+%\mksmall{
+%- \frac{b_{21}}{b_{01}}
+%- \frac{b_{22}}{b_{02} }
+%- \frac{b_{23}}{b_{03}}
+%- \frac{b_{24}}{b_{04}}
+%+ \left( \sum_{i=1}^N w_{1i} \right) \left( \frac{a_{14}}{b_{04}} + \frac{a_{13}}{b_{03}} + \frac{a_{12}}{b_{02}} + \frac{a_{11}}{b_{01}} \right) }
+%\\&&\quad
+%\mksmall{
+%+ \left(\sum_{i=1}^N w_{1i} \left(\sum_{j=i+1}^N w_{1j}\right)\right) + \sum_{i=1}^N w_{2i} 
+%-
+%\left(\frac{a_{11}}{b_{01}} + \frac{a_{12}}{b_{02}} + \frac{a_{13}}{b_{03}} + \frac{a_{14}}{b_{04}} + \sum_{i=1}^N w_{1i} \right)
+%\left( \frac{b_{11}}{b_{01}} + \frac{b_{12}}{b_{02}}   \right)
+%\Bigg]}
+\\&&\quad
+\mksmall{
+= 1
++ x \left[ \sum_{i=1}^4 \frac{a_{1i}}{b_{0i}} +  \sum_{i=1}^N w_{1i}  - \sum_{i=1}^2\frac{b_{1i}}{b_{0i}} \right]}
+\\&&\quad
+\mksmall{
++ x^2 \Bigg[ \Big\{\sum_{i=1}^4 \frac{a_{1i}}{b_{0i}} \left(  \sum_{j=i+1}^4 \frac{a_{1j}}{b_{0j}} +  \sum_{j=1}^N w_{1j}  - \sum_{j=1}^2\frac{b_{1j}}{b_{0j}} \right)\Big\}
++ \Big\{\sum_{i=1}^N w_{1i} \left(   \sum_{j=i+1}^N w_{1j} - \sum_{j=1}^2\frac{b_{1j}}{b_{0j}} \right)\Big\}
++ \Big\{\sum_{i=1}^2\frac{b_{1j}}{b_{0j}}  \left( \sum_{j=i+1}^2\frac{b_{1j}}{b_{0j}} \right)\Big\}
+}
+\\&&\quad
+\mksmall{
++ \sum_{i=1}^4 \frac{a_{2i}}{b_{0i}} - \sum_{j=1}^2\frac{b_{2j}}{b_{0j}} + \sum_{i=1}^N w_{2i}
++ \sum_{i=1}^2 \frac{b_{1i}^2}{b_{0i}^2}
+\Bigg]}
+\end{eqnarray*}
+To obtain a concrete expression, it is necessary to also expand the no-emission probabilities to second order:
+\begin{eqnarray}
+\noem{0\pm}{x}{t_0}{t_1} &=& 
+1
+-\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\alpha_s(t)}{2\pi}
+\frac{\xftilde{0\pm}{\frac{x}{z}}{\rho}}{\xf{0\pm}{x}{\rho}} 
+\\&+&
+\frac{1}{2}\left(
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\alpha_s(t)}{2\pi}
+\frac{\xftilde{0\pm}{\frac{x}{z}}{\rho}}{\xf{0\pm}{x}{\rho}} 
+\right)^2 + ``\mathcal{O}(\alpha_s^3)"
+\\&=&
+1
+-\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\alpha_s(t)}{2\pi}
+\frac{\xftilde{0\pm,(0)}{\frac{x}{z}}{\rho}}{\xf{0\pm}{x}{\rho}} 
+\\&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\alpha_s(t)}{2\pi}
+\frac{\xftilde{0\pm,(1)}{\frac{x}{z}}{\rho}}{\xf{0\pm}{x}{\rho}} 
+\\&+&
+\frac{1}{2}\left(
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\alpha_s(t)}{2\pi}
+\frac{\xftilde{0\pm,(0)}{\frac{x}{z}}{\rho}}{\xf{0\pm}{x}{\rho}} 
+\right)^2 + ``\mathcal{O}(\alpha_s^3)"
+\end{eqnarray}
+Here, $``\mathcal{O}(\alpha_s^3)"$ indicates that at present, this is not yet a consistent expansion in powers of
+$\alpha_s(\mu_r)$, since the remaining terms include integrals of running-coupling factors.
+
+The PDF ratios in the no-emission rates need to be evolved to a common $\mu_f$, using the PDF expansion formula in both numerator and denominator, and using
+the ratio expansion formula. Luckily, only the expansion up to $\mathcal{O}(\alpha_s^1(\mu_r))$ terms is required.
+\begin{eqnarray*}
+\frac{\xftilde{0\pm}{\frac{x}{z}}{\rho}}{\xf{0\pm}{x}{\rho}} =
+ &=& \frac{\sum\limits_s \pskernel{0\pm}{b(s)}{z}  \xf{b(s)}{\frac{x}{z}}{\rho}}{\xf{0\pm}{x}{\rho}}
+\\&=&
+\sum\limits_s \pskernel{0\pm}{b(s)}{z} \Big[
+ \frac{\xf{b(s)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+\\&+&
+\sgn{\rho}{\mu_f}
+\int\displaylimits_{\min(\rho,\mu_f) }^{\max(\rho,\mu_f)}\frac{d\bar\mu}{\bar\mu} \frac{\alpha_s(\mu_r)}{2\pi}
+\int\displaylimits_{C(x/z)}  dz' 
+\frac{\xfhat{b(s),(0)}{\frac{x}{zz'}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+\\&-&
+\frac{\xf{b(s)}{\frac{x}{z}}{\mu_f} }{\xf{0\pm}{x}{\mu_f}}
+\sgn{\rho}{\mu_f}
+\int\displaylimits_{\min(\rho,\mu_f) }^{\max(\rho,\mu_f)}\frac{d\bar\mu}{\bar\mu} \frac{\alpha_s(\mu_r)}{2\pi}
+\int\displaylimits_{C(x)}  dz' 
+\frac{\xfhat{0\pm,(0)}{\frac{x}{z'}}{\mu_f} }{
+\xf{0\pm}{x}{\mu_f} }
+\Big]
+\end{eqnarray*}
+With this, the second-order expansion of a no-emission probability amounts to
+\begin{eqnarray*}
+\noem{0\pm}{x}{t_0}{t_1}
+&=& 1
+%
+%
+%
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r}\int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\alpha_s(\mu_r)}{2\pi}
+\frac{\xftilde{0\pm,(0)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}} 
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\frac{\beta_0}{2}\ln\left(\frac{\mu_r}{t}\right)
+\frac{\xftilde{0\pm}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\frac{\xftilde{0\pm,(1)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}} 
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\sgn{\rho}{\mu_f}
+\Bigg\{
+\\&&\qquad
+\int\displaylimits_{\min(\rho,\mu_f) }^{\max(\rho,\mu_f)}\frac{d\bar\mu}{\bar\mu}
+\int\displaylimits_{C(x/z)}  dz' 
+\frac{ \sum\limits_s \pskernel{0\pm}{b(s)}{z} \xfhat{b(s),(0)}{\frac{x}{zz'}}{\mu_f} }{\xf{0\pm}{x}{\mu_f}}
+%\frac{\xfhat{b,(0)}{\frac{x}{zz'}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+\\&&\quad -
+\frac{ \sum\limits_s \pskernel{0\pm}{b(s)}{z} \xf{b(s)}{\frac{x}{z}}{\mu_f} }{\xf{0\pm}{x}{\mu_f}}
+\int\displaylimits_{\min(\rho,\mu_f) }^{\max(\rho,\mu_f)}\frac{d\bar\mu}{\bar\mu}
+\int\displaylimits_{C(x)}  dz' 
+\frac{\xfhat{0\pm,(0)}{\frac{x}{z'}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+\Bigg\}
+\\&+&
+\frac{1}{2}
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\left(
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\xftilde{0\pm,(0)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}} 
+\right)^2
+\\
+&+&
+\mathcal{O}(\alpha_s^3(\mu_r))
+%
+%
+%
+%
+\\
+&=& 1
+%
+%
+%
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r}\int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\alpha_s(\mu_r)}{2\pi}
+\frac{\sum\limits_s\lopskernel{0\pm}{b(s)}{z} \xf{b(s)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}} 
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\frac{\beta_0}{2}\ln\left(\frac{\mu_r}{t}\right)
+\frac{\sum\limits_s\lopskernel{0\pm}{b(s)}{z} \xf{b(s)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\frac{\sum\limits_s\nlopskernel{0\pm}{b(s)}{z} \xf{b(s)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}} 
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\sgn{\rho}{\mu_f}
+\ln\left[\frac{\max(\rho,\mu_f)}{\min(\rho,\mu_f}\right]
+\sum\limits_s \lopskernel{0\pm}{b(s)}{z}
+\\&&\qquad
+\Bigg\{
+%\int\displaylimits_{\min(\rho,\mu_f) }^{\max(\rho,\mu_f)}\frac{d\bar\mu}{\bar\mu}
+\mksmall{\int\displaylimits_{C(x/z)}  dz' 
+\frac{ \sum\limits_{c=q,g} \lodglapkernel{b(s)}{c}{z'} \xf{c}{\frac{x}{zz'}}{\mu_f} }{\xf{0\pm}{x}{\mu_f}}
+%\frac{\xfhat{b,(0)}{\frac{x}{zz'}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+%\\&&\quad
+ -
+\frac{ \xf{b(s)}{\frac{x}{z}}{\mu_f} }{\xf{0\pm}{x}{\mu_f}}
+%\int\displaylimits_{\min(\rho,\mu_f) }^{\max(\rho,\mu_f)}\frac{d\bar\mu}{\bar\mu}
+\int\displaylimits_{C(x)}  dz' 
+\frac{  \sum\limits_{c=q,g} \lodglapkernel{0\pm}{c}{z'} \xf{c}{\frac{x}{z'}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+}
+\Bigg\}
+\\&+&
+\frac{1}{2}
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\left(
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\sum\limits_s\lopskernel{0\pm}{b(s)}{z} \xf{b(s)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}} 
+\right)^2
+\\
+&+&
+\mathcal{O}(\alpha_s^3(\mu_r))
+%
+%
+%
+%
+\\
+&=& 1
+%
+%
+%
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r}\int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\alpha_s(\mu_r)}{2\pi}
+\sum\limits_s\lopskernel{0\pm}{b(s)}{z}
+\frac{\xf{b(s)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}} 
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r}\int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\sum\limits_s\lopskernel{0\pm}{b(s)}{z}
+\frac{\xf{b(s)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}} 
+\\
+&&\Bigg[
+\frac{\beta_0}{2}\ln\left(\frac{\mu_r}{t}\right)
++
+\sgn{\rho}{\mu_f}
+\ln\left[\frac{\max(\rho,\mu_f)}{\min(\rho,\mu_f}\right]
+\\&&~~\cdot
+\Bigg\{
+%\int\displaylimits_{\min(\rho,\mu_f) }^{\max(\rho,\mu_f)}\frac{d\bar\mu}{\bar\mu}
+\mksmall{\int\displaylimits_{C(x/z)}  dz' 
+\frac{ \sum\limits_{c=q,g} \lodglapkernel{b(s)}{c}{z'} \xf{c}{\frac{x}{zz'}}{\mu_f} }
+     { \xf{b(s)}{\frac{x}{z}}{\mu_f}}
+%\frac{\xfhat{b,(0)}{\frac{x}{zz'}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+%\\&&\quad
+ -
+%\frac{ \xf{b(s)}{\frac{x}{z}}{\mu_f} }{\xf{0\pm}{x}{\mu_f}}
+%\int\displaylimits_{\min(\rho,\mu_f) }^{\max(\rho,\mu_f)}\frac{d\bar\mu}{\bar\mu}
+\int\displaylimits_{C(x)}  dz' 
+\frac{  \sum\limits_{c=q,g} \lodglapkernel{0\pm}{c}{z'} \xf{c}{\frac{x}{z'}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+}
+\Bigg\}
+\Bigg]
+\\
+&-&
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\frac{\sum\limits_s\nlopskernel{0\pm}{b(s)}{z} \xf{b(s)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}}
+\\&+&
+\frac{1}{2}
+\left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2
+\left(
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r} \int\displaylimits_{\Omega_{0\pm,r,s}(x,\rho)} dz
+\frac{\sum\limits_s\lopskernel{0\pm}{b(s)}{z} \xf{b(s)}{\frac{x}{z}}{\mu_f}}{\xf{0\pm}{x}{\mu_f}} 
+\right)^2 
+\\
+&+&
+\mathcal{O}(\alpha_s^3(\mu_r))
+\end{eqnarray*}
+With this last piece, the second-order expansion of the CKKW-L weight amounts to
+\begin{eqnarray*}
+&&\mksmall{\frac{ \xf{0+}{x_0^+}{t_0} }{ \xf{0+}{x_0^+}{t_1} }
+\frac{\xf{0-}{x_0^-}{t_0}}{\xf{0-}{x_0^-}{t_1}}
+\frac{\xf{1+}{x_1^+}{t_1}}{\xf{1+}{x_1^+}{\mu_f}}
+\frac{\xf{1-}{x_1^-}{t_1}}{\xf{1-}{x_1^-}{\mu_f}}}\\
+&&
+%
+\mksmall{\frac{\alpha_s(t_1)}{\alpha_s(\mu_r)}
+\noem{0+}{x_0^+}{t_0}{t_1}
+\noem{0-}{x_0^-}{t_0}{t_1}
+\prod_{f\in FS} \noem{f}{x_0^+,x_0^-}{t_0}{t_1}}\\
+\approx
+&&
+\mksmall{
+\frac{(b_{01} + a_{11} x + a_{21} x^2) (b_{02} + a_{12} x + a_{22} x^2) (b_{03} + a_{13} x + a_{23} x^2) (b_{04} + a_{14} x + a_{24} x^2) \prod_{i=1}^N (1 + w_{1i} x +w_{2i} x^2)} {
+(b_{01} + b_{11} x + b_{21} x^2 ) (b_{02} + b_{12} x + b_{22} x^2 ) b_{03}  b_{04}}
+}
+\\&&\quad
+\mksmall{
+= 1
++ x \left[ \sum_{i=1}^4 \frac{a_{1i}}{b_{0i}} +  \sum_{i=1}^N w_{1i}  - \sum_{i=1}^2\frac{b_{1i}}{b_{0i}} \right]}
+\\&&\quad
+\mksmall{
++ x^2 \Bigg[ \Big\{\sum_{i=1}^4 \frac{a_{1i}}{b_{0i}} \left(  \sum_{j=i+1}^4 \frac{a_{1j}}{b_{0j}} +  \sum_{j=1}^N w_{1j}  - \sum_{j=1}^2\frac{b_{1j}}{b_{0j}} \right)\Big\}
++ \Big\{\sum_{i=1}^N w_{1i} \left(   \sum_{j=i+1}^N w_{1j} - \sum_{j=1}^2\frac{b_{1j}}{b_{0j}} \right)\Big\}
++ \Big\{\sum_{i=1}^2\frac{b_{1j}}{b_{0j}}  \left( \sum_{j=i+1}^2\frac{b_{1j}}{b_{0j}} \right)\Big\}
+}
+\\&&\quad
+\mksmall{
++ \sum_{i=1}^4 \frac{a_{2i}}{b_{0i}} - \sum_{j=1}^2\frac{b_{2j}}{b_{0j}} + \sum_{i=1}^N w_{2i}
++ \sum_{i=1}^2 \frac{b_{1i}^2}{b_{0i}^2}
+\Bigg]}
+\end{eqnarray*}
+where
+\begin{eqnarray*}
+&&\frac{a_{11}}{b_{01}} -  \frac{b_{11}}{b_{01}} + \frac{a_{12}}{b_{02}} - \frac{b_{12}}{b_{02}}
++ \frac{a_{13}}{b_{03}} + \frac{a_{14}}{b_{04}} 
+\\
+&&=
+\Bigg(\sgn{t_0}{\mu_f}
+ \ln\left[\frac{\max(t_0,\mu_f)}{\min(t_0,\mu_f)}\right]
+~-~
+\sgn{t_1}{\mu_f}
+ \ln\left[\frac{\max(t_1,\mu_f)}{\min(t_1,\mu_f)}\right]
+\Bigg)
+\int\displaylimits_{C(x_0^+)}  dz \frac{\xfhat{0+,(0)}{\frac{x_0^+}{z}}{\mu_f} }{ \xf{0+}{x_0^+}{\mu_f} }
+\\
+&&+
+\Bigg(\sgn{t_0}{\mu_f}
+ \ln\left[\frac{\max(t_0,\mu_f)}{\min(t_0,\mu_f)}\right]
+~-~
+\sgn{t_1}{\mu_f}
+ \ln\left[\frac{\max(t_1,\mu_f)}{\min(t_1,\mu_f)}\right]
+\Bigg)
+\int\displaylimits_{C(x_0^-)}  dz \frac{\xfhat{0-,(0)}{\frac{x_0^-}{z}}{\mu_f} }{ \xf{0-}{x_0^-}{\mu_f} }
+\\
+&&+
+\sgn{t_1}{\mu_f}
+ \ln\left[\frac{\max(t_1,\mu_f)}{\min(t_1,\mu_f)}\right]
+\int\displaylimits_{C(x_1^+)}  dz \frac{\xfhat{1+,(0)}{\frac{x_1^+}{z}}{\mu_f} }{ \xf{1+}{x_1^+}{\mu_f} }
+\\
+&&+
+\sgn{t_1}{\mu_f}
+ \ln\left[\frac{\max(t_1,\mu_f)}{\min(t_1,\mu_f)}\right]
+\int\displaylimits_{C(x_1^-)}  dz \frac{\xfhat{1-,(0)}{\frac{x_1^-}{z}}{\mu_f} }{ \xf{1-}{x_1^-}{\mu_f} }
+\end{eqnarray*}
+and where
+\begin{eqnarray*}
+\sum_{i=1}^N w_{1i} &=& 
+\sum_{i\in\{+,-\}}
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r}\int\displaylimits_{\Omega_{0i,r,s}(x,\rho)} dz
+\frac{\xftilde{0i,(0)}{\frac{x_0^i}{z}}{\mu_f}}{\xf{0i}{x_0^i}{\mu_f}} 
+\\&&
+-~
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r\in \{+,-\}} \sum\limits_{s} \int\displaylimits_{\Omega_{f,r,s}(\rho,x^\pm)} dz 
+\frac{\xf{0r}{x^{\pm'}}{\mu_f}}{\xf{0r}{x}{\mu_f}} 
+\pskernel{f}{f'(s)}{z,\rho,m_{i,r}^2}
+\\&&
+-~
+\int\displaylimits_{t_1}^{t_0} \frac{d\rho}{\rho} \sum\limits_{r\not\in \{+,-\}} \sum\limits_{s} \int\displaylimits_{\Omega_{f,r,s}(\rho)} dz \pskernel{f}{f'(s)}{z,\rho,m_{f,r}^2}
+\\&&
++~
+\frac{\beta_0}{2}\ln\left(\frac{\mu_r}{t_1}\right)
+\end{eqnarray*}
+
+\newpage
+
+\section*{Auxiliary formulae}
+
+\begin{eqnarray*}
+\mksmall{\frac{a_0 + a_1 \left(\frac{\alpha_s(\mu_r)}{2\pi}\right) + a_2 \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2 }{ b_0 + b_1 \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)  + b_2 \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2 }
+%-->
+%a0/b0
+%+ (x (a1 b0 - a0 b1))/b0^2
+%+ (x^2 (-a0 b0 b2 + a0 b1^2 - a1 b0 b1 + a2 b0^2))/b0^3
+=
+\frac{a_0}{b_0}
++ \left(\frac{\alpha_s(\mu_r)}{2\pi}\right) \left( \frac{a_1}{b_0} - \frac{a_0}{b_0} \frac{b_1}{b_0}\right)
++ \left(\frac{\alpha_s(\mu_r)}{2\pi}\right)^2 \left(\frac{a_2}{b_0} - \frac{a_0}{b_0} \frac{b_2}{b_0} + \frac{a_0}{b_0} \frac{b_1^2}{b_0^2} - \frac{a_1}{b_0}\frac{b_1}{b_0}\right)}
+\end{eqnarray*}
+
+
+\begin{eqnarray*}
+&&
+\mksmall{
+\frac{a_0 + a_1 x + a_ 2 x^2 }{ (b_{01} + b_{11} x + b_{21} x^2 ) (b_{02} + b_{12} x + b_{22} x^2 ) (b_{03} + b_{13} x + b_{23} x^2) (b_{04} + b_{14} x + b_{24} x^2 )} }
+%-->
+%a0/(b01 b02 b03 b04)
+%+ (x (a1 b01 b02 b03 b04 - a0 (b02 (b01 b03 b14 + b01 b04 b13 + b03 b04 b11) + b01 b03 b04 b12)))/(b01^2 b02^2 b03^2 b04^2)
+%+ (x^2 (a0 (b02^2 (b03^2 (b01^2 b14^2 + b04^2 (b11^2 - b01 b21) + b01 b04 (b11 b14 - b01 b24)) + b01^2 b04^2 b13^2 + b01 b03 b04 (-b01 b04 b23 + b01 b13 b14 + b04 b11 b13)) + b01^2 b03^2 b04^2 b12^2 + b01 b02 b03 b04 (b03 (-b01 b04 b22 + b01 b12 b14 + b04 b11 b12) + b01 b04 b12 b13)) - a1 b01 b02 b03 b04 (b02 (b01 b03 b14 + b01 b04 b13 + b03 b04 b11) + b01 b03 b04 b12) + a2 b01^2 b02^2 b03^2 b04^2))/(b01^3 b02^3 b03^3 b04^3)
+\\&&\quad
+\mksmall{
+=
+  \frac{a_0}{ b_{01} b_{02} b_{03} b_{04}}}
+\\&&\quad
+\mksmall{
++ x \left( \frac{a_1}{(b_{01} b_{02} b_{03} b_{04})} - \frac{a_0}{(b_{01} b_{02} b_{03} b_{04})} \left( \frac{b_{11}}{b_{01}} + \frac{b_{12}}{b_{02}} + \frac{b_{13}}{b_{03}} + \frac{b_{14}}{b_{04}} \right) \right)}
+\\&&\quad
+\mksmall{
++ x^2 \Big[
+\frac{a_0 }{(b_{01} b_{02} b_{03} b_{04})} \left(
+  \frac{b_{11}^2}{b_{01}^2}
++ \frac{b_{12}^2}{b_{02}^2}
++ \frac{b_{13}^2}{b_{03}^2}
++ \frac{b_{14}^2}{b_{04}^2}
++ \frac{b_{11} b_{12} }{(b_{01} b_{02})}
++ \frac{b_{11} b_{13} }{(b_{01} b_{03})}
++ \frac{b_{11} b_{14} }{(b_{01} b_{04})}
++ \frac{b_{12} b_{13} }{(b_{02} b_{03})}
++ \frac{b_{12} b_{14} }{(b_{02} b_{04})}
++ \frac{b_{13} b_{14} }{(b_{03} b_{04})}\right.}
+\\&&\quad
+\mksmall{\left.
+- \frac{b_{21}}{b_{01}}
+- \frac{b_{22}}{b_{02} }
+- \frac{b_{23}}{b_{03}}
+- \frac{b_{24}}{b_{04}}\right)
+- \frac{a_1 }{ (b_{01} b_{02} b_{03} b_{04})} \left( \frac{b_{11}}{b_{01}} + \frac{b_{12}}{b_{02}} + \frac{b_{13}}{b_{03}} + \frac{b_{14}}{b_{04}} \right)
++ \frac{a_2 }{ (b_{01} b_{02} b_{03} b_{04})}\Big]
+}
+\end{eqnarray*}
+
+
+
+
+
+relevant terms:
+\begin{eqnarray*}
+&&
+\mksmall{
+(b_{01} + a_{11} x + a_{21} x^2) (b_{02} + a_{12} x + a_{22} x^2) (b_{03} + a_{13} x + a_{23} x^2) (b_{04} + a_{14} x + a_{24} x^2) \prod_{i=1}^N (1 + w_{1i} x +w_{2i} x^2)}
+\\&&\quad
+\mksmall{
+%=
+%b01 b02 b03 b04 + x (b04 (b03 (b02 (a_{11} + b01 (w11 +w_{12})) + a_{12} b01) + a_{13} b01 b02) + a_{14} b01 b02 b03) + x^2 (a_{14} (b03 (b02 (a_{11} + b01 (w11 +w_{12})) + a_{12} b01) + a_{13} b01 b02) + b04 (a_{13} (b02 (a_{11} + b01 (w11 +w_{12})) + a_{12} b01) + b03 (a_{12} (a_{11} + b01 (w11 +w_{12})) + b02 (a_{11} (w11 +w_{12}) + a_{21} + b01 (w11w_{12} +w_{21} +w_{22})) + a_{22} b01) + a_{23} b01 b02) + a_{24} b01 b02 b03) 
+=
+b_{01} b_{02} b_{03} b_{04}
++ x \left(\frac{a_{11}}{b_{01}} + \frac{a_{12}}{b_{02}} + \frac{a_{13}}{b_{03}} + \frac{a_{14}}{b_{04}} + \sum_{i=1}^N w_{1i} \right) b_{01} b_{02} b_{03} b_{04}}
+\\&&\quad
+\mksmall{
++ x^2 \Bigg(
+  \frac{a_{11}}{b_{01}} \frac{a_{14}}{b_{04}} + \frac{a_{12}}{b_{02}} \frac{a_{14}}{b_{04}} + \frac{a_{13}}{b_{03}} \frac{a_{14}}{b_{04}} + \frac{a_{11}}{b_{01}} \frac{a_{13}}{b_{03}} + \frac{a_{12}}{b_{02}} \frac{a_{13}}{b_{03}} + \frac{a_{12}}{b_{02}} \frac{a_{11}}{b_{01}}}
+\\&&\quad
+\mksmall{
++ \frac{a_{21}}{b_{01}} + \frac{a_{22}}{b_{02}} + \frac{a_{23}}{b_{03}} + \frac{a_{24}}{b_{04}}}
+\\&&\quad
+\mksmall{
++ \left( \sum_{i=1}^N w_{1i} \right) \left( \frac{a_{14}}{b_{04}} + \frac{a_{13}}{b_{03}} + \frac{a_{12}}{b_{02}} + \frac{a_{11}}{b_{01}} \right) }
+\\&&\quad
+\mksmall{
+ + \left(\sum_{i=1}^N w_{1i} \left(\sum_{j=i}^N w_{1j}\right)\right) + \sum_{i=1}^N w_{2i} \Bigg) b_{01} b_{02} b_{03} b_{04}
+}
+\end{eqnarray*}
+
+
+
+\begin{eqnarray*}
+&&
+\mksmall{
+\frac{(b_{01} + a_{11} x + a_{21} x^2) (b_{02} + a_{12} x + a_{22} x^2) (b_{03} + a_{13} x + a_{23} x^2) (b_{04} + a_{14} x + a_{24} x^2) \prod_{i=1}^N (1 + w_{1i} x +w_{2i} x^2)} {
+(b_{01} + b_{11} x + b_{21} x^2 ) (b_{02} + b_{12} x + b_{22} x^2 ) (b_{03} + b_{13} x + b_{23} x^2) (b_{04} + b_{14} x + b_{24} x^2 )}
+}
+\\&&\quad
+\mksmall{
+= 1
++ x \left(\frac{a_{11}}{b_{01}} + \frac{a_{12}}{b_{02}} + \frac{a_{13}}{b_{03}} + \frac{a_{14}}{b_{04}} + \sum_{i=1}^N w_{1i}  - \frac{b_{11}}{b_{01}} - \frac{b_{12}}{b_{02}} - \frac{b_{13}}{b_{03}} - \frac{b_{14}}{b_{04}} \right)}
+\\&&\quad
+\mksmall{
++ x^2 \Bigg(
+  \frac{a_{11}}{b_{01}} \frac{a_{14}}{b_{04}} + \frac{a_{12}}{b_{02}} \frac{a_{14}}{b_{04}} + \frac{a_{13}}{b_{03}} \frac{a_{14}}{b_{04}} + \frac{a_{11}}{b_{01}} \frac{a_{13}}{b_{03}} + \frac{a_{12}}{b_{02}} \frac{a_{13}}{b_{03}} + \frac{a_{12}}{b_{02}} \frac{a_{11}}{b_{01}}}
+\\&&\quad
+\mksmall{
++ \frac{b_{11}^2}{b_{01}^2}
++ \frac{b_{12}^2}{b_{02}^2}
++ \frac{b_{13}^2}{b_{03}^2}
++ \frac{b_{14}^2}{b_{04}^2}
++ \frac{b_{11} b_{12} }{(b_{01} b_{02})}
++ \frac{b_{11} b_{13} }{(b_{01} b_{03})}
++ \frac{b_{11} b_{14} }{(b_{01} b_{04})}
++ \frac{b_{12} b_{13} }{(b_{02} b_{03})}
++ \frac{b_{12} b_{14} }{(b_{02} b_{04})}
++ \frac{b_{13} b_{14} }{(b_{03} b_{04})}}
+\\&&\quad
+\mksmall{
++ \frac{a_{21}}{b_{01}} + \frac{a_{22}}{b_{02}} + \frac{a_{23}}{b_{03}} + \frac{a_{24}}{b_{04}}
+- \frac{b_{21}}{b_{01}}
+- \frac{b_{22}}{b_{02} }
+- \frac{b_{23}}{b_{03}}
+- \frac{b_{24}}{b_{04}}
+}
+\\&&\quad
+\mksmall{
++ \left( \sum_{i=1}^N w_{1i} \right) \left( \frac{a_{14}}{b_{04}} + \frac{a_{13}}{b_{03}} + \frac{a_{12}}{b_{02}} + \frac{a_{11}}{b_{01}} \right)
+ + \left(\sum_{i=1}^N w_{1i} \left(\sum_{j=i}^N w_{1j}\right)\right) + \sum_{i=1}^N w_{2i} 
+}
+\\&&\quad
+\mksmall{
+-
+\left(\frac{a_{11}}{b_{01}} + \frac{a_{12}}{b_{02}} + \frac{a_{13}}{b_{03}} + \frac{a_{14}}{b_{04}} + \sum_{i=1}^N w_{1i} \right)
+\left( \frac{b_{11}}{b_{01}} + \frac{b_{12}}{b_{02}} + \frac{b_{13}}{b_{03}} + \frac{b_{14}}{b_{04}} \right)
+\Bigg)}
+\end{eqnarray*}
+
+
+
+\end{document}

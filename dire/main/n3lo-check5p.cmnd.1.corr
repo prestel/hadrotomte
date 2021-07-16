@@ -1,0 +1,70 @@
+
+Dire:doMerging = on
+Merging:Process = e+e->jj
+
+Merging:checkBiasesBasic = on
+
+Merging:TMS = 1.0
+Merging:useMEs = false
+Merging:enforceCutOnLHE = off
+merging:doxsectionestimate = off
+
+Dire:doExitAfterMerging = on
+
+Main:numberOfEvents         = 500000 ! number of events generated
+Beams:frameType             = 4
+next:numbercount = 10
+Check:epTolErr               = 1e-2
+
+# Switch off event generation steps
+PartonLevel:MPI              = off
+PartonLevel:FSR              = off
+PartonLevel:ISR              = off
+HadronLevel:all              = off
+BeamRemnants:primordialKT    = off
+PartonLevel:Remnants         = off
+Check:event                  = off
+TimeShower:QEDshowerByQ      = off
+TimeShower:QEDshowerByL      = off
+SpaceShower:QEDshowerByQ     = off
+SpaceShower:QEDshowerByL     = off
+PartonLevel:FSRinResonances  = off
+ProcessLevel:resonanceDecays = off
+LesHouches:setQuarkMass        = 0
+LesHouches:setLeptonMass       = 0
+LesHouches:matchInOut          = off
+
+1:m0 = 0.0
+2:m0 = 0.0
+3:m0 = 0.0
+4:m0 = 0.0
+
+merging:nrequested = 2
+Merging:nRecluster = 1
+
+// Uncorrected shower mode
+//Dire:checkBiases:clusterMode = 1
+//Dire:checkBiases:correctionMode = 0
+
+// Correct shower mode to probabilistic mode
+//Dire:checkBiases:clusterMode = 1
+//Dire:checkBiases:correctionMode = 1
+
+// Correct shower mode to democratic mode
+Dire:checkBiases:clusterMode = 1
+Dire:checkBiases:correctionMode = 3
+
+// Uncorrected toy FO mode
+//Dire:checkBiases:clusterMode = 2
+//Dire:checkBiases:correctionMode = 0
+
+// Corrected toy FO mode to democratic mode
+//Dire:checkBiases:clusterMode = 2
+//Dire:checkBiases:correctionMode = 3
+
+// Uncorrected democratic mode
+//Dire:checkBiases:clusterMode = 3
+//Dire:checkBiases:correctionMode = 3
+
+#Beams:LHEF = ../n3lo-5p-inclusive-sample-2.lhe
+Beams:LHEF = /scratch/atwood/prestel/work/2019/MG5/MG5_aMC_v2_6_0-hack/ee2uu_3g/Events/test1/unweighted_events.lhe.gz

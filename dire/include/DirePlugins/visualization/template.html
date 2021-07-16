@@ -1,0 +1,757 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Particle Collision</title>
+  <style>
+    body { margin: 0; font-family: Monospace; }
+    canvas { width: 100%; height: 100% }
+    #info { position: absolute; padding: 10px;
+            width: 100%; text-align: center; }
+    #gui { position: absolute; top: 30px; right: 0px }
+  </style>
+  <script src="three.min.js"></script>
+  <script src="OrbitControls.js"></script>
+  <script src="dat.gui.min.js"></script>
+</head>
+<body>
+  <p id="message"></p>
+  <div id="info">
+    Click + Drag: Move the Camera! Two-Finger Scroll Mode: Zoom in!
+  </div>
+  <script>
+
+var rederer, scene, camera, cameraControls;
+
+var clock = new THREE.Clock();
+
+// Detector characteristics.
+var detectorInnerHeight = 12;
+var detectorOuterHeight = 14;
+var detectorInnerRadius = 4.5;
+var detectorOuterRadius = 5.5;
+var detectorAddAngle    = Math.PI/12;
+var detectorColor       = 0x808080;
+var detectorMaterial    = new THREE.MeshLambertMaterial({color: detectorColor,
+  side: THREE.DoubleSide});
+function detector(radius, height) {
+  var geometry = new THREE.CylinderGeometry(radius, radius, height,
+    16, 8, false, Math.PI-detectorAddAngle, Math.PI+2*detectorAddAngle);
+  var object   = new THREE.Mesh(geometry, detectorMaterial);
+  object.rotation.x = Math.PI/2;
+  return object;
+}
+function detectorFront(width, height, moveup, movedown, movetopleft,
+  movebottomleft, movetopright, movebottomright) {
+  var geometry = new THREE.PlaneGeometry(width, height);
+  var object   = new THREE.Mesh(geometry, detectorMaterial);
+  object.rotation.z = Math.PI/2;
+  object.rotation.y = Math.PI/2;
+  var object3D = new THREE.Object3D();
+  object3D.add(object);
+  if (moveup) {
+    object.position.y   = (detectorOuterRadius+detectorInnerRadius)/2;
+    object3D.rotation.z = -detectorAddAngle;
+  } else if (movedown) {
+    object.position.y   = -(detectorOuterRadius+detectorInnerRadius)/2;
+    object3D.rotation.z = detectorAddAngle;
+  } else if (movetopleft) {
+    object3D.rotation.z = -detectorAddAngle;
+    object3D.position.z = (detectorOuterHeight+detectorInnerHeight)/4;
+    object3D.position.y = width/2*Math.cos(detectorAddAngle);
+    object3D.position.x = width/2*Math.sin(detectorAddAngle);
+  } else if (movebottomleft) {
+    object3D.rotation.z = detectorAddAngle;
+    object3D.position.z = (detectorOuterHeight+detectorInnerHeight)/4;
+    object3D.position.y = -width/2*Math.cos(detectorAddAngle);
+    object3D.position.x = width/2*Math.sin(detectorAddAngle);
+  } else if (movetopright) {
+    object3D.rotation.z = -detectorAddAngle;
+    object3D.position.z = -(detectorOuterHeight+detectorInnerHeight)/4;
+    object3D.position.y = width/2*Math.cos(detectorAddAngle);
+    object3D.position.x = width/2*Math.sin(detectorAddAngle);
+  } else if (movebottomright) {
+    object3D.rotation.z = detectorAddAngle;
+    object3D.position.z = -(detectorOuterHeight+detectorInnerHeight)/4;
+    object3D.position.y = -width/2*Math.cos(detectorAddAngle);
+    object3D.position.x = width/2*Math.sin(detectorAddAngle);
+  }
+  return object3D;
+}
+
+// Particle, string, and line radii, geometries, colors, and materials.
+var radii = { lepton: 0.05, parton: 0.05, diquark: 0.1, triquark: 0.13,
+  gamma: 0.05, hwzBoson: 0.07 };
+var geometries = {
+  string: function(height) { return new THREE.CylinderGeometry(radii.parton,
+    radii.parton, height, 16, 8, true); }
+};
+Object.keys(radii).forEach(function(key, index) {
+  geometries[key] = new THREE.SphereGeometry(radii[key], 32, 16);
+});
+var colors = { lepton: 0x000000, red: 0xE00000, green: 0x00E000,
+  blue: 0x0000E0, yellow: 0xE0E000, magenta: 0xE000E0, cyan: 0x00E0E0,
+  diquark: 0x8BAEE8, triquark: 0x8BAEE8, gamma: 0x000000, hwzBoson: 0x000000,
+  string: 0xE89025, stringrgb: {r: 232, g: 144, b: 37}, line: 0x000000 };
+var materials = {};
+Object.keys(colors).forEach(function(key, index) {
+  if (key == "diquark" || key == "triquark") {
+    materials[key] = new THREE.MeshPhongMaterial({color: colors[key],
+      specular: 0xFFFFFF, shininess: 0, opacity: 0.3, transparent: true});
+  } else if (key == "string") {
+    materials[key] = new THREE.MeshLambertMaterial({color: colors[key]});
+  } else if (key == "line") {
+    materials[key] = new THREE.LineBasicMaterial({color: colors[key],
+      side: THREE.DoubleSide});
+  } else if (key != "stringrgb") {
+    materials[key] = new THREE.MeshPhongMaterial({color: colors[key],
+      shininess: 100});
+  }
+});
+
+// Meshes for particles, strings, and lines.
+function lepton() {
+  return new THREE.Mesh(geometries.lepton, materials.lepton);
+}
+function quark(color) {
+  return new THREE.Mesh(geometries.parton, materials[color]);
+}
+function gluon(leftCol, rightCol) {
+  var material;
+  if (leftCol == "red"   && rightCol == "red"  ) material = materials.red;
+  if (leftCol == "red"   && rightCol == "green") material = materials.yellow;
+  if (leftCol == "red"   && rightCol == "blue" ) material = materials.magenta;
+  if (leftCol == "green" && rightCol == "red"  ) material = materials.yellow;
+  if (leftCol == "green" && rightCol == "green") material = materials.green;
+  if (leftCol == "green" && rightCol == "blue" ) material = materials.cyan;
+  if (leftCol == "blue"  && rightCol == "red"  ) material = materials.magenta;
+  if (leftCol == "blue"  && rightCol == "green") material = materials.cyan;
+  if (leftCol == "blue"  && rightCol == "blue" ) material = materials.blue;
+  return new THREE.Mesh(geometries.parton, material);
+}
+function diquark(col1, col2, addShell) {
+  var dq = new THREE.Object3D();
+  if (addShell) dq.add(new THREE.Mesh(geometries.diquark, materials.diquark));
+  var quarks = [new quark(col1), new quark(col2)];
+  quarks[0].position.set(0.0, 0.0, -radii.parton); dq.add(quarks[0]);
+  quarks[1].position.set(0.0, 0.0,  radii.parton); dq.add(quarks[1]);
+  return dq;
+}
+function triquark(col1, col2, col3, addShell) {
+  var tq = new THREE.Object3D();
+  if (addShell) tq.add(new THREE.Mesh(geometries.triquark, materials.triquark));
+  var quarks = [new quark(col1), new quark(col2), new quark(col3)];
+  for (var i=0; i<3; i++) {
+    quarks[i].position.set(0.0, radii.parton*Math.sin(2*i*Math.PI/3.0),
+      radii.parton*Math.cos(2*i*Math.PI/3.0)); tq.add(quarks[i]);
+  }
+  return tq;
+}
+function gamma() {
+  return new THREE.Mesh(geometries.gamma, materials.gamma);
+}
+function hwzBoson() {
+  return new THREE.Mesh(geometries.hwzBoson, materials.hwzBoson);
+}
+function stringPoint() {
+  return new THREE.Mesh(geometries.parton, materials.string);
+}
+function string() {
+  return new THREE.Mesh(geometries.string(1), materials.string);
+}
+function line() {
+  var lineGeometry = new THREE.Geometry();
+  lineGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+  lineGeometry.vertices.push(new THREE.Vector3(0, 0, 0));
+  return new THREE.Line(lineGeometry, materials.line);
+}
+
+// Text.
+var textDrawn = false;
+function createText(name) {
+  var fontLoader = new THREE.FontLoader();
+  fontLoader.load("helvetiker_regular.typeface.json", function (font) {
+    var geometry = new THREE.TextGeometry(name, {font: font, size: 0.1,
+      height: 0.01});
+    geometry.computeBoundingBox();
+    geometry.computeVertexNormals();
+    var material = new THREE.MeshBasicMaterial({color: 0x000000});
+    var text     = new THREE.Mesh(geometry, material);
+    text.position.set(0, 0, 0);
+    scene.add(text);
+  });
+}
+function createTextShapes(name, position) {
+  var fontLoader = new THREE.FontLoader();
+  fontLoader.load("helvetiker_regular.typeface.json", function (font) {
+    // Shapes.
+    var shapes        = font.generateShapes(convertName(name), 0.15, 2);
+    var shapeGeometry = new THREE.ShapeGeometry(shapes);
+    shapeGeometry.computeBoundingBox();
+    shapeGeometry.translate(-(shapeGeometry.boundingBox.max.x+
+      shapeGeometry.boundingBox.min.x)/2, -(shapeGeometry.boundingBox.max.y+
+      shapeGeometry.boundingBox.min.y)/2, 0);
+    // Text with geometry and material.
+    var textGeometry = new THREE.BufferGeometry().fromGeometry(shapeGeometry);
+    var textMaterial = new THREE.MeshBasicMaterial({color: 0x000000,
+      side: THREE.DoubleSide, depthTest: false});
+    var text = new THREE.Mesh(textGeometry, textMaterial);
+    text.rotation.y = Math.PI/2;
+    text.position.set(0, 0, 0);
+    // Plane with geometry and material.
+    var planeGeometry = new THREE.PlaneGeometry(shapeGeometry.boundingBox.max.x-
+      shapeGeometry.boundingBox.min.x+0.05, shapeGeometry.boundingBox.max.y-
+      shapeGeometry.boundingBox.min.y+0.05);
+    var planeMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF,
+      side: THREE.DoubleSide, depthTest: false});
+    var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.y = Math.PI/2;
+    plane.position.set(0, 0, 0);
+    // Add text and plane to object.
+    var object = new THREE.Object3D();
+    plane.renderOrder = 1;
+    text.renderOrder  = 2;
+    object.add(text);
+    object.add(plane);
+    object.position.copy(position);
+    scene.add(object);
+  });
+}
+function convertName(name) {
+  if (name == "gamma") return "\u03B3";
+  if (name.length >= 2 && name.substring(0,2) == "pi")
+    return "\u03C0"+name.substring(2);
+  if (name.length >= 3 && name.substring(0,3) == "rho")
+    return "\u03C1"+name.substring(3);
+  if (name.length >= 5 && name.substring(0,5) == "omega")
+    return "\u03C9"+name.substring(5);
+  if (name.length >= 3 && name.substring(0,3) == "eta")
+    return "\u03B7"+name.substring(3);
+  if (name.length >= 2 && name.substring(0,2) == "mu")
+    return "\u03BC"+name.substring(2);
+  if (name.length >= 2 && name.substring(0,2) == "nu")
+    return "\u03BD"+name.substring(2);
+  if (name.length >= 3 && name.substring(0,3) == "tau")
+    return "\u03C4"+name.substring(3);
+  return name;
+}
+
+// Timing and speed.
+var relSpeed         = 1.0; // relative speed for everything
+var initialRelSpeed  = 1.0; // additional relative speed for incoming
+                            // (0.5 for ee, 1.0 for pp)
+var hadronRelSpeed   = 2.0; // additional relative speed for hadrons
+var scaleTimeMult    = 1.0*relSpeed; // multiplicative factor for scale -> time
+                                     // in shower
+var tauTimeMult      = 0.8*relSpeed; // multiplicative factor for time -> time
+                                     // in decays
+var timeStart        = -detectorInnerHeight/2*relSpeed*initialRelSpeed;
+var inTimeStart      = timeStart;
+var inTimeEnd        = 0*relSpeed;
+var showerTimeStart  = inTimeEnd;
+var showerTimeEnd    = showerTimeStart+1/0.4*scaleTimeMult;
+var stringTimeStart  = showerTimeEnd;
+var primHadTimeStart = stringTimeStart;
+var timeEnd          = 100.0*relSpeed;
+
+// Allow to stop the time.
+var controller;
+var doStopTime = false;
+var stopTime   = 0;
+var subtrTime  = 0;
+
+// Drawing flags.
+var removeStrings = false;
+var drawAxes      = false;
+
+// Classes for particles, strings, and hadrons.
+function Particle(obj, name, timeS, timeE, posS, vel, energy, mass) { 
+  this.object  = obj;
+  this.name    = name;
+  this.start   = timeS;
+  this.end     = timeE;
+  this.pos     = posS;
+  this.vel     = vel;
+  this.energy  = energy;
+  this.mass    = mass;
+  this.added   = false;
+  this.removed = false;
+  this.line    = new line();
+}
+function StringTube(obj, timeS, timeE, end1, end2) {
+  this.object  = obj;
+  this.start   = timeS;
+  this.end     = timeE;
+  this.end1    = end1;
+  this.end2    = end2;
+  this.added   = false;
+  this.removed = false;
+  this.line    = new line();
+}
+function PrimaryHadron(obj, name, timeS, timeE, posS, vel, energy, mass, ends,
+  strings) { 
+  this.object  = obj;
+  this.name    = name;
+  this.start   = timeS;
+  this.end     = timeE;
+  this.pos     = posS;
+  this.vel     = vel;
+  this.energy  = energy;
+  this.mass    = mass;
+  this.ends    = ends;
+  this.strings = strings;
+  this.added   = false;
+  this.removed = false;
+  this.line    = new line();
+}
+function DecayProduct(obj, name, timeS, timeE, posS, vel, energy, mass) { 
+  this.object  = obj;
+  this.name    = name;
+  this.start   = timeS;
+  this.end     = timeE;
+  this.pos     = posS;
+  this.vel     = vel;
+  this.energy  = energy;
+  this.mass    = mass;
+  this.added   = false;
+  this.removed = false;
+  this.line    = new line();
+}
+
+var particles      = [];
+var strings        = [];
+var primaryHadrons = [];
+var decayProducts  = [];
+
+// Initialize, setup renderer and camera.
+function init() {
+  // Create a renderer with antialiasing, set size and color.
+  renderer = new THREE.WebGLRenderer({antialias: true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor("#FFFFFF");
+  // Camera and controls.
+  camera = new THREE.PerspectiveCamera(35,
+    window.innerWidth/window.innerHeight, 1, 400);
+  camera.position.set(20, 1, 0);
+  cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
+  cameraControls.target.set(0, 0, 0);
+  // Append renderer to DOM.
+  document.body.appendChild(renderer.domElement);
+  // Add event listener for window resizing.
+  window.addEventListener('resize', onWindowResize);
+}
+
+// Resize window.
+function onWindowResize() {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  cameraControls.update();
+}
+
+// Setup the gui.
+function setupGui() {
+  controller = { newDoStopTime: doStopTime };
+  var gui = new dat.GUI({autoplace: false});
+  gui.domElement.id = 'gui';
+  gui.add(controller, "newDoStopTime").name("stop");
+}
+
+// Setup scene, define lights, detector, and setup particle and string list.
+function setupScene() {
+  // Create an empty scene.
+  scene = new THREE.Scene();
+  // Axes.
+  if (drawAxes) {
+    var axesHelper = new THREE.AxesHelper(2);
+    scene.add(axesHelper);
+  }
+  // Lights.
+  var light = new THREE.AmbientLight(0xFFFFFF, 0.2);
+  scene.add(light);
+  light = new THREE.DirectionalLight(0x222222, 4.0);
+  light.position.set(100, 0, 0);
+  scene.add(light);
+  light = new THREE.PointLight(0x222222, 2.0);
+  light.position.set(1, 0, 2.5);
+  scene.add(light);
+  light = new THREE.PointLight(0x222222, 2.0);
+  light.position.set(1, 0, -2.5);
+  scene.add(light);
+  // Detector.
+  scene.add(new detector(detectorInnerRadius, detectorInnerHeight));
+  scene.add(new detector(detectorOuterRadius, detectorOuterHeight));
+  scene.add(new detectorFront(detectorOuterRadius-detectorInnerRadius,
+    detectorOuterHeight, true, false, false, false, false, false));
+  scene.add(new detectorFront(detectorOuterRadius-detectorInnerRadius,
+    detectorOuterHeight, false, true, false, false, false, false));
+  scene.add(new detectorFront(detectorInnerRadius,
+    (detectorOuterHeight-detectorInnerHeight)/2, false, false, true, false,
+    false, false));
+  scene.add(new detectorFront(detectorInnerRadius,
+    (detectorOuterHeight-detectorInnerHeight)/2, false, false, false, true,
+    false, false));
+  scene.add(new detectorFront(detectorInnerRadius,
+    (detectorOuterHeight-detectorInnerHeight)/2, false, false, false, false,
+    true, false));
+  scene.add(new detectorFront(detectorInnerRadius,
+    (detectorOuterHeight-detectorInnerHeight)/2, false, false, false, false,
+    false, true));
+  // 1.1 incoming: e+ and e-: - status -21
+  //                          - start time = timeStart
+  //                          - end time = showerTimeStart
+  //                          - position = 0, 0, +-detectorInnerHeight/2
+  // 1.2 outgoing: q and qbar: - status -23
+  //                           - start time = showerTimeStart
+  //                           - end time = 1/scale of daugther*scaleTimeMult
+  //                             (if scale of daughers = 0 showerTimeEnd)
+  //                           - position = endPosition of incoming
+  // 1.3 outgoing: branching: - status -51/-52
+  //                          - start time = 1/scale
+  //                          - end time = 1/scale of daugther*scaleTimeMult
+  //                            (if scale of daughers = 0 showerTimeEnd)
+  //                          - position = endPosition of mother1()
+  // 2. particle ends for strings: - status -23/-51/-52
+  //                               - no daughters with scale > 0 exist
+  //                               - start time = stringTimeStart
+  //                               - end time = stringTimeEnd
+  //                               - position = endPosition of corresponding
+  //                                 entry in particles[]
+  // 3. strings: - start time = stringTimeStart
+  //             - end time = stringTimeEnd
+  //             - end point indices from corresponding entry in particles[]
+  // 4. primary hadrons: - status 81...89
+  //                     - start time = primHadTimeStart
+  //                     - end time = timeEnd if final state and 
+  //                       primHadTimeStart+(tProd(daugther)-tProd)*tauTimeMult
+  //                       if intermediate
+  //                     - position = vertex
+  // 5. decay products: - status 91...99
+  //                    - start time = primaryHadrons[mother] end time if
+  //                      mother is primary hadron and decayProducts[mother]
+  //                      end time if mother is decay product
+  //                    - end time = timeEnd if final state and start time +
+  //                      (tProd(daugther)-tProd)*tauTimeMult if intermediate
+  //                    - position = endPosition of mother
+//**** BEGIN ****//
+//**** END ****//
+}
+
+// Rescale the velocity.
+function rescaleVelocity(object, type, i) {
+  // p = gamma m b c, with b = v/c and gamma = 1/(1-b^2)^0.5
+  // <=> p^2 = b^2/(1-b^2) m^2 c^2
+  // <=> p^2(1-b^2) = b^2 m^2 c^2
+  // <=> b^2 ( m^2 c^2 + p^2 ) = p^2
+  // <=> v^2 = p^2 / ( m^2 c^2 + p^2 ) c^2
+  // <=> v = p / ((mc)^2 + p^2)^0.5 c
+  object.vel.normalize();
+  if (type == 0 && i < 2)
+    object.vel.multiplyScalar(1/relSpeed/initialRelSpeed);
+  else if (type == 0 && object.start == stringTimeStart)
+    object.vel.multiplyScalar(1/relSpeed/hadronRelSpeed);
+  else if (type == 0)
+    object.vel.multiplyScalar(1/relSpeed);
+  else if (type == 1 || type == 2)
+    object.vel.multiplyScalar(1/relSpeed/hadronRelSpeed);
+}
+
+// Calculate the position of an object at a specific time.
+function getPosition(object, type, i, time) {
+  var timeS = object.start, timeE = object.end;
+  rescaleVelocity(object, type, i);
+  if (time <= timeS) return new THREE.Vector3().copy(object.pos);
+  if (time >= timeE) return new THREE.Vector3().copy(object.pos).
+                                addScaledVector(object.vel,timeE-timeS);
+  return new THREE.Vector3().copy(object.pos).
+             addScaledVector(object.vel,time-timeS);
+}
+
+// Calculate final position of an object.
+function endPosition(object, type, i) {
+  return getPosition(object, type, i, timeEnd);
+}
+
+// Set the positions of primary hadrons.
+function setPrimaryHadronPosition(ph) {
+  var velocity = new THREE.Vector3().copy(ph.vel);
+  var iEnds    = ph.ends;
+  // Find string parton with smallest angle to hadron.
+  var iEnd1Sm  = -1;
+  var smAngle1 = -1;
+  for (var j=0; j<iEnds.length; j++) {
+    var endV  = new THREE.Vector3().copy(particles[iEnds[j]].vel);
+    var angle = Math.acos(velocity.dot(endV)/velocity.length()/endV.length());
+    if (iEnd1Sm == -1 || smAngle1 > angle) {
+      iEnd1Sm  = iEnds[j];
+      smAngle1 = angle;
+    }
+  }
+  // Find the one or two possible string bits to the parton.
+  var iEnd2Sm  = -1;
+  var smAngle2 = -1;
+  for (var j=0; j<strings.length; j++) {
+    if (strings[j].end1 == iEnd1Sm || strings[j].end2 == iEnd1Sm) {
+      var iEnd2 = (strings[j].end1 == iEnd1Sm ? strings[j].end2
+                                              : strings[j].end1);
+      var endV  = new THREE.Vector3().copy(particles[iEnd2].vel);
+      var angle = Math.acos(velocity.dot(endV)/velocity.length()/endV.length());
+      if (iEnd2Sm == -1 || smAngle2 > angle) {
+        iEnd2Sm  = iEnd2;
+        smAngle2 = angle;
+      }
+    }
+  }
+  // End positions of the string partons.
+  var end1 = getPosition(particles[iEnd1Sm], 0, iEnd1Sm, ph.start);
+  var end2 = getPosition(particles[iEnd2Sm], 0, iEnd2Sm, ph.start);
+  var axis = new THREE.Vector3().subVectors(end1, end2);
+  var cntr = new THREE.Vector3().addVectors(end1, end2).multiplyScalar(0.5);
+  cntr.addScaledVector(axis, 1/2-Math.pow(smAngle1,1.5)/Math.pow(Math.PI,1.5));
+  ph.pos = cntr;
+}
+
+// Set ending time of strings given the primary hadrons of the string.
+function setStringTimes() {
+  // Find the largest starting time of all primary hadrons.
+  var timeSmax = 0;
+  for (var i=0; i<primaryHadrons.length; i++)
+    if (primaryHadrons[i].start > timeSmax) timeSmax = primaryHadrons[i].start;
+  for (var i=0; i<strings.length; i++) {
+    // Set ending time of string and string partons.
+    strings[i].end = timeSmax;
+    particles[strings[i].end1].end = timeSmax;
+    particles[strings[i].end2].end = timeSmax;
+  }
+}
+
+// Fill the scene with particles and strings.
+function fillScene(time) {
+  for (var i=0; i<particles.length; i++)
+    drawParticleInDetector(time, particles[i]);
+  for (var i=0; i<strings.length; i++)
+    drawStringInDetector(time, strings[i]);
+  for (var i=0; i<primaryHadrons.length; i++)
+    drawHadronInDetector(time, primaryHadrons[i]);
+  for (var i=0; i<decayProducts.length; i++)
+    drawHadronInDetector(time, decayProducts[i]);
+  if (!textDrawn) drawText(time);
+}
+
+// Draw a particle with index i inside the detector.
+function drawParticleInDetector(time, pt) {
+  if (time >= pt.start && time < pt.end) {
+    pt.object.position.copy(pt.pos);
+    pt.object.position.addScaledVector(pt.vel, time-pt.start);
+    if (!insideDetector(pt.object.position)) {
+      if (!pt.removed) {
+        scene.remove(pt.object);
+        pt.removed = true;
+      }
+    } else {
+      pt.line.geometry.vertices[0].copy(pt.pos);
+      pt.line.geometry.vertices[1].copy(pt.object.position);
+      pt.line.geometry.verticesNeedUpdate = true;
+      if (!pt.added) {
+        scene.add(pt.object);
+        scene.add(pt.line);
+        pt.added = true;
+      }
+    }
+  } else if (time >= pt.end && !pt.removed) {
+    if (pt.end > showerTimeEnd) {
+      if (removeStrings) scene.remove(pt.object);
+    } else scene.remove(pt.object);
+    pt.removed = true;
+  }
+}
+
+// Draw a string with index i inside the detector.
+function drawStringInDetector(time, st) {
+  var end1 = particles[st.end1].object.position;
+  var end2 = particles[st.end2].object.position;
+  if (time >= st.start && time < st.end) {
+    if (!insideDetector(end1) || !insideDetector(end2)) {
+      if (!st.removed) {
+        scene.remove(st.object);
+        st.removed = true;
+      }
+    } else {
+      var cylAxis        = new THREE.Vector3().subVectors(end1, end2);
+      st.object.geometry = new geometries.string(cylAxis.length());
+      var center         = new THREE.Vector3().addVectors(end1,
+        end2).multiplyScalar(0.5);
+      var yAxis          = new THREE.Vector3(0, 1, 0);
+      var rotationAxis   = new THREE.Vector3().crossVectors(cylAxis, yAxis);
+      var theta          = -Math.acos(cylAxis.dot(yAxis)/cylAxis.length());
+      if (rotationAxis.length() < 0.00001) {
+        rotationAxis = new THREE.Vector3(1, 0, 0);
+      }
+      rotationAxis.normalize();
+      st.object.matrixAutoUpdate = false;
+      st.object.matrix.makeTranslation(center.x, center.y, center.z);
+      var rotMatrix = new THREE.Matrix4().makeRotationAxis(rotationAxis, theta);
+      st.object.matrix.multiply(rotMatrix);
+      // Let the color fade away towards gray.
+      materials.string.color.setRGB(colors.stringrgb.r/255, 
+        colors.stringrgb.g/255+(colors.stringrgb.r-colors.stringrgb.g)/255
+        *(time-st.start)/(st.end-st.start),
+        colors.stringrgb.b/255+(colors.stringrgb.r-colors.stringrgb.b)/255
+        *(time-st.start)/(st.end-st.start));
+      if (!st.added) {
+        scene.add(st.object);
+        st.added = true;
+      }
+    }
+  } else if (time >= st.end && !st.removed) {
+    st.line.geometry.vertices[0].copy(endPosition(particles[st.end1], 0, st.end1));
+    st.line.geometry.vertices[1].copy(endPosition(particles[st.end2], 0, st.end2));
+    st.line.geometry.verticesNeedUpdate = true;
+    scene.add(st.line);
+    if (removeStrings) scene.remove(st.object);
+    st.removed = true;
+  }
+}
+
+// Draw a primary hadron with index i inside the detector.
+function drawHadronInDetector(time, had) {
+  if (time >= had.start && time < had.end) {
+    had.object.position.copy(had.pos);
+    had.object.position.addScaledVector(had.vel, time-had.start);
+    if (!insideDetector(had.object.position)) {
+      if (!had.removed) {
+        scene.remove(had.object);
+        had.removed = true;
+      }
+    } else {
+      had.line.geometry.vertices[0].copy(had.pos);
+      had.line.geometry.vertices[1].copy(had.object.position);
+      had.line.geometry.verticesNeedUpdate = true;
+      if (!had.added) {
+        scene.add(had.object);
+        scene.add(had.line);
+        had.added = true;
+      }
+    }
+  } else if (time >= had.end && !had.removed) {
+    scene.remove(had.object);
+    had.removed = true;
+  }
+}
+
+// Draw the names of stable hadrons.
+function drawText(time) {
+  // Go through all primary hadrons and decay products and check if any
+  // stable hadron has not yet hit the detector.
+  for (var i=0; i<primaryHadrons.length; i++) {
+    var ph = primaryHadrons[i];
+    if (ph.end == timeEnd) {
+      var position = new THREE.Vector3().copy(ph.pos);
+      position.addScaledVector(ph.vel, time-ph.start);
+      if (insideDetector(position)) return;
+    }
+  }
+  for (var i=0; i<decayProducts.length; i++) {
+    var dp = decayProducts[i];
+    if (dp.end == timeEnd) {
+      var position = new THREE.Vector3().copy(dp.pos);
+      position.addScaledVector(dp.vel, time-dp.start);
+      if (insideDetector(position)) return;
+    }
+  }
+  for (var i=0; i<primaryHadrons.length; i++) {
+    var ph = primaryHadrons[i];
+    var position = new THREE.Vector3().copy(ph.pos);
+    if (ph.end == timeEnd) position.addScaledVector(ph.vel, time-ph.start);
+    else position.addScaledVector(ph.vel, ph.end-ph.start);
+    if (!insideDetector(position)) {
+      position = new THREE.Vector3().copy(ph.line.geometry.vertices[1]);
+        if (!(position.x == 0 && position.y == 0 && position.z == 0)) 
+      createTextShapes(ph.name, position);
+    }
+  }
+  for (var i=0; i<decayProducts.length; i++) {
+    var dp = decayProducts[i];
+    var position = new THREE.Vector3().copy(dp.pos);
+    if (dp.end == timeEnd) position.addScaledVector(dp.vel, time-dp.start);
+    else position.addScaledVector(dp.vel, dp.end-dp.start);
+    if (!insideDetector(position)) {
+      position = new THREE.Vector3().copy(dp.line.geometry.vertices[1]);
+      if (!(position.x == 0 && position.y == 0 && position.z == 0)) 
+        createTextShapes(dp.name, position);
+    }
+  }
+  textDrawn = true;
+  return;
+  for (var i=0; i<primaryHadrons.length; i++) {
+    if (primaryHadrons[i].end == timeEnd) {
+      var position =
+        new THREE.Vector3().copy(primaryHadrons[i].line.geometry.vertices[1]);
+      createTextShapes(primaryHadrons[i].name, position);
+    }
+  }
+  for (var i=0; i<decayProducts.length; i++) {
+    if (decayProducts[i].end == timeEnd) {
+      var position =
+        new THREE.Vector3().copy(decayProducts[i].line.geometry.vertices[1]);
+      if (!(position.x == 0 && position.y == 0 && position.z == 0)) 
+        createTextShapes(decayProducts[i].name, position);
+    }
+  }
+  textDrawn = true;
+}
+
+// Check if object is still within detector geometry.
+function insideDetector(position) {
+  if (position.z > detectorInnerHeight/2 || position.z < -detectorInnerHeight/2 ||
+    Math.sqrt(position.x*position.x+position.y*position.y) > detectorInnerRadius) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+// Request animation.
+function animate() {
+  requestAnimationFrame(animate);
+  render();
+}
+
+// Render the scene.
+function render() {
+  cameraControls.target.set(0, 0, 0);
+  cameraControls.update();
+  var time = (clock.getElapsedTime()+timeStart)%(timeEnd+timeStart);
+      time = clock.getElapsedTime()+timeStart;
+  if (!doStopTime && !controller.newDoStopTime) {
+    time -= subtrTime;
+    if (time < timeEnd+timeStart) {
+      fillScene(time);
+    }
+  } else if (!doStopTime && controller.newDoStopTime) {
+    doStopTime = true;
+    stopTime   = time;
+  } else if (doStopTime && !controller.newDoStopTime) {
+    doStopTime = false;
+    subtrTime += (time-stopTime);
+    time -= subtrTime;
+    if (time < timeEnd+timeStart) {
+      fillScene(time);
+    }
+  }
+  renderer.render(scene, camera);
+}
+
+// Main program.
+try {
+  init();
+  setupGui();
+  setupScene();
+  animate();
+} catch(e) {
+  var message = document.getElementById("message");
+  message.innerHTML = "Unrecoverable error: " + e;
+}
+
+  </script>
+</body>
+</html>

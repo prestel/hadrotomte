@@ -1,0 +1,45 @@
+
+Dire:doMerging = on
+Merging:Process = e+e->jj
+
+Dire:doTOMTE = on
+
+Merging:TMS = 1.0
+Merging:useMEs = false
+merging:nrequested = 2
+Merging:enforceCutOnLHE = off
+merging:doxsectionestimate = off
+
+Dire:doExitAfterMerging = on
+
+Main:numberOfEvents         = 10 ! number of events generated
+Beams:frameType             = 4
+//next:numbercount = 1
+Check:epTolErr               = 1e-2
+
+# Switch off event generation steps
+PartonLevel:MPI              = off
+#PartonLevel:FSR              = off
+PartonLevel:ISR              = off
+HadronLevel:all              = off
+BeamRemnants:primordialKT    = off
+PartonLevel:Remnants         = off
+Check:event                  = off
+TimeShower:QEDshowerByQ      = off
+TimeShower:QEDshowerByL      = off
+SpaceShower:QEDshowerByQ     = off
+SpaceShower:QEDshowerByL     = off
+#PartonLevel:FSRinResonances  = off
+ProcessLevel:resonanceDecays = off
+LesHouches:setQuarkMass        = 0
+LesHouches:setLeptonMass       = 0
+LesHouches:matchInOut          = off
+
+1:m0 = 0.0
+2:m0 = 0.0
+3:m0 = 0.0
+4:m0 = 0.0
+
+Beams:LHEF = n3lo-4p-combined-sample.lhe
+
+

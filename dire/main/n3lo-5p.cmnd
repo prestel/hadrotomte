@@ -1,0 +1,51 @@
+
+Dire:doMerging = on
+Merging:Process = e+e->jj
+
+Dire:doTOMTE = on
+
+Merging:TMS = 1.0
+Merging:useMEs = false
+merging:nrequested = 3
+Merging:enforceCutOnLHE = off
+merging:doxsectionestimate = off
+
+TimeShower:alphaSvalue = 0.118
+SpaceShower:alphaSvalue = 0.118
+
+Dire:doExitAfterMerging = on
+Merging:includeWeightinXsection = off
+Merging:applyVeto = off
+
+Main:numberOfEvents         = 10 ! number of events generated
+Beams:frameType             = 4
+//next:numbercount = 1
+Check:epTolErr               = 1e-2
+
+# Switch off event generation steps
+PartonLevel:MPI              = off
+#PartonLevel:FSR              = off
+PartonLevel:ISR              = off
+HadronLevel:all              = off
+BeamRemnants:primordialKT    = off
+PartonLevel:Remnants         = off
+Check:event                  = off
+TimeShower:QEDshowerByQ      = off
+TimeShower:QEDshowerByL      = off
+SpaceShower:QEDshowerByQ     = off
+SpaceShower:QEDshowerByL     = off
+#PartonLevel:FSRinResonances  = off
+ProcessLevel:resonanceDecays = off
+LesHouches:setQuarkMass        = 0
+LesHouches:setLeptonMass       = 0
+LesHouches:matchInOut          = off
+
+1:m0 = 0.0
+2:m0 = 0.0
+3:m0 = 0.0
+4:m0 = 0.0
+#TimeShower:renormMultFac = 4.
+
+Dire:doTOMTE:AlphasRatios = off
+Beams:LHEF = /scratch/atwood/prestel/work/2019/DIREblub2/DIRE-2.004yy/n3lo-5p-inclusive-sample.lhe
+
