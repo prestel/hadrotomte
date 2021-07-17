@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -fPIC -O3 -DNDEBUG   CMakeFiles/subgrid_test.dir/subgrid_test.cc.o  -o subgrid_test  -Wl,-rpath,/home/prestel/work/2021/hadrotomte/apfelxx/lib ../../lib/libapfelxx.so 

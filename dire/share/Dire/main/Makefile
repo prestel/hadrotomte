@@ -58,9 +58,9 @@ CXX_COMMON:=$(shell echo $(CXX_COMMON) | sed 's|-std=c++98||g')
 CXX_COMMON+= -std=c++11 -O0 -g
 #CXX_COMMON+= -std=c++14 -g -fsanitize=leak -fsanitize=address -fno-omit-frame-pointer
 
-APFEL_INC=/scratch/atwood/prestel/work/2019/DIREblub2/apfelxx/build/include
-APFEL_LIB=/scratch/atwood/prestel/work/2019/DIREblub2/apfelxx/build/lib
-APFEL_BIN=/scratch/atwood/prestel/work/2019/DIREblub2/apfelxx/build/bin
+APFEL_INC=../../apfelxx/build/include
+APFEL_LIB=../../apfelxx/build/lib
+APFEL_BIN=../../apfelxx/build/bin
 
 DIRE_INCLUDE=$(PREFIX_INCLUDE)
 DIRE_SRC=$(PREFIX_SRC)

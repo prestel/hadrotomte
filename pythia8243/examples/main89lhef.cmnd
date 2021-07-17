@@ -1,0 +1,38 @@
+! main89mlm.cmnd
+
+! Specify statistics parameters.
+Main:numberOfEvents         = 1000000 ! number of events generated
+! Tell Pythia that LHEF input is used
+Beams:frameType             = 4
+
+! Be more forgiving with momentum mismatches.
+Check:epTolErr               = 1e-2
+
+# Switch off event generation steps
+PartonLevel:MPI              = off
+PartonLevel:FSR              = off
+PartonLevel:ISR              = off
+HadronLevel:all              = off
+BeamRemnants:primordialKT    = off
+PartonLevel:Remnants         = off
+Check:event                  = off
+TimeShower:QEDshowerByQ      = off
+TimeShower:QEDshowerByL      = off
+SpaceShower:QEDshowerByQ     = off
+SpaceShower:QEDshowerByL     = off
+PartonLevel:FSRinResonances  = off
+ProcessLevel:resonanceDecays = off
+LesHouches:setQuarkMass        = 0
+LesHouches:setLeptonMass       = 0
+LesHouches:matchInOut          = off
+
+
+LHEFInputs:nSubruns       = 1
+Main:subrun               = 0
+#Beams:LHEF                = /scratch/atwood/prestel/work/2019/MG5/MG5_aMC_v2_6_0-hack/ee2ddmumu/Events/test5/unweighted_events.lhe.gz
+Beams:LHEF                = /scratch/atwood/prestel/work/2019/MG5/MG5_aMC_v2_6_0-hack/ee2ddmumu/Events/test8/unweighted_events.lhe.gz
+#Beams:LHEF                = /scratch/atwood/prestel/work/2019/MG5/MG5_aMC_v2_6_0-hack/ee2ddmumu_sm/Events/test5/unweighted_events.lhe.gz
+#Beams:LHEF = /scratch/atwood/prestel/work/2019/MG5/MG5_aMC_v2_6_0-hack/ee2uu_0g/Events/test1/unweighted_events.lhe.gz
+#Beams:LHEF = /scratch/atwood/prestel/work/2019/MG5/MG5_aMC_v2_6_0-hack/ee2uu_1g/Events/test1/unweighted_events.lhe.gz
+#Beams:LHEF = /scratch/atwood/prestel/work/2019/MG5/MG5_aMC_v2_6_0-hack/ee2uu_2g/Events/test1/unweighted_events.lhe.gz
+Beams:LHEF = /scratch/atwood/prestel/work/2019/MG5/MG5_aMC_v2_6_0-hack/ee2uu_3g/Events/test1/unweighted_events.lhe.gz

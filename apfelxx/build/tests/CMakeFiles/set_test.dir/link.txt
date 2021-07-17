@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -fPIC -O3 -DNDEBUG   CMakeFiles/set_test.dir/set_test.cc.o  -o set_test  -Wl,-rpath,/home/prestel/work/2021/hadrotomte/apfelxx/lib ../../lib/libapfelxx.so 

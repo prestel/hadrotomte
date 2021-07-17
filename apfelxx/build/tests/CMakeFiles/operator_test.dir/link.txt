@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -fPIC -O3 -DNDEBUG   CMakeFiles/operator_test.dir/operator_test.cc.o  -o operator_test  -Wl,-rpath,/home/prestel/work/2021/hadrotomte/apfelxx/lib ../../lib/libapfelxx.so 

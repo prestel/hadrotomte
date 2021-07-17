@@ -58,9 +58,9 @@ CXX_COMMON:=$(shell echo $(CXX_COMMON) | sed 's|-std=c++98||g')
 CXX_COMMON+= -std=c++11 -O0 -g
 #CXX_COMMON+= -std=c++14 -g -fsanitize=leak -fsanitize=address -fno-omit-frame-pointer
 
-APFEL_INC=/scratch/atwood/prestel/work/2019/DIREblub2/apfelxx/build/include
-APFEL_LIB=/scratch/atwood/prestel/work/2019/DIREblub2/apfelxx/build/lib
-APFEL_BIN=/scratch/atwood/prestel/work/2019/DIREblub2/apfelxx/build/bin
+APFEL_INC=$(PREFIX_INCLUDE)/../../apfelxx/build/include
+APFEL_LIB=$(PREFIX_INCLUDE)/../../apfelxx/build/lib
+APFEL_BIN=$(PREFIX_INCLUDE)/../../apfelxx/build/bin
 
 DIRE_INCLUDE=$(PREFIX_INCLUDE)
 DIRE_SRC=$(PREFIX_SRC)
@@ -113,6 +113,9 @@ dire : $$@.cc
 dire-new : $$@.cc
 	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)''"
 	$(CXX) $^ -o $@ $(DIRE_CONFIG)
+#dire% : $$@.cc
+#	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)'' -L$(APFEL_LIB) -Wl,-rpath,$(APFEL_LIB) -lapfelxx"
+#	$(CXX) $^ -o $@ $(DIRE_CONFIG) -L$(APFEL_LIB) -Wl,-rpath,$(APFEL_LIB) -lapfelxx
 dire% : $$@.cc
 	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)''"
 	$(CXX) $^ -o $@ $(DIRE_CONFIG)

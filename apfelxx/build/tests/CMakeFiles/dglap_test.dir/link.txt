@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -fPIC -O3 -DNDEBUG   CMakeFiles/dglap_test.dir/dglap_test.cc.o  -o dglap_test  -Wl,-rpath,/home/prestel/work/2021/hadrotomte/apfelxx/lib ../../lib/libapfelxx.so 

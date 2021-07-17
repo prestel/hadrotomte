@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -fPIC -O3 -DNDEBUG   CMakeFiles/coupling_test.dir/coupling_test.cc.o  -o coupling_test  -Wl,-rpath,/home/prestel/work/2021/hadrotomte/apfelxx/lib ../../lib/libapfelxx.so 
