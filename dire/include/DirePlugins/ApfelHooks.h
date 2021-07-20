@@ -1,8 +1,7 @@
 
 #include "Dire/Hooks.h"
-//#include "Pythia8Plugins/LHAPDF6.h"
-#include "Pythia8/PartonDistributions.h"
 #include "LHAPDF/LHAPDF.h"
+#include "apfel/apfelxx.h"
 
 namespace Pythia8 {
 
@@ -14,11 +13,12 @@ class ApfelHooks : public DireHooks {
 
 public:
 
-  ApfelHooks(string setName="MMHT2014nlo68cl")
-    : info(::LHAPDF::PDFSet(setName)), pdfs(vector< ::LHAPDF::PDF* >(info.size(), 0)) {
+  ApfelHooks(string setName="MMHT2014nlo68cl") :
+    info(::LHAPDF::PDFSet(setName)),
+    pdfs(vector< ::LHAPDF::PDF* >(info.size(), 0)) {
     for (int i=0; i < pdfs.size(); ++i)
       if (!pdfs[i]) pdfs[i] = info.mkPDF(i);
-    }
+  }
 
  ~ApfelHooks() {
     //if (pdf) delete pdf;
@@ -36,6 +36,9 @@ public:
 
   double getPDFexpansion(int order, int flav, double x, double q2,
     double muf2, double mur2) {
+
+    const apfel::Grid g{{apfel::SubGrid{80,1e-5,3},
+      apfel::SubGrid{50,1e-1,3}, apfel::SubGrid{40,8e-1,3}}};
 
     int member = 1;
     ::LHAPDF::PDF *pdf = pdfs[member];

@@ -109,7 +109,7 @@ endif
 # Examples without external dependencies.
 dire : $$@.cc
 	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)''"
-	$(CXX) $^ -o $@ $(DIRE_CONFIG) -L$(APFEL_LIB) -Wl,-rpath,$(APFEL_LIB) -lapfelxx
+	$(CXX) $^ -o $@ $(DIRE_CONFIG) -I$(APFEL_INC) -L$(APFEL_LIB) -Wl,-rpath,$(APFEL_LIB) -lapfelxx
 dire-new : $$@.cc
 	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)''"
 	$(CXX) $^ -o $@ $(DIRE_CONFIG)
