@@ -3300,7 +3300,7 @@ abort();
              - (doTOMTEAlphasRatios ? weightsExp["alphasratio_1_2"]        : 0.)
              // absent because already cancelled with delta_0_2
              // + pow2(weightsExp["delta_0_1"])
-             // absent because already cancelled with alphasratio_1_2
+             // absent because already cancelled with alphasratio_1_2 // wrong comment, see History.cc lines 4065 - 4077 
              + (doTOMTEAlphasRatios  ? pow2(weightsExp["alphasratio_1_1"]) : 0.)
              +  (doTOMTESudakovs     ? weightsExp["delta_0_1"]             : 0.)
                *(doTOMTEAlphasRatios ? weightsExp["alphasratio_1_1"]       : 0.));

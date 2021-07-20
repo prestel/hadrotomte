@@ -5,8 +5,6 @@
 #include "Dire/DireSpace.h"
 #include "Dire/DireTimes.h"
 
-#include "apfel/apfelxx.h"
-
 namespace Pythia8 {
 
 //==========================================================================
@@ -4070,7 +4068,7 @@ double DireHistory::weightAlphasExpanded( int order, double as0, double muR,
     if (order == 2 || order == 12) {
       double exp
         = pow2(as0 / (4.*M_PI)) * BETA1 * log( (muR*muR) / (b*asScale));
-        // not included because it would anyway cancel in the final result!
+        // not included because it would anyway cancel in the final result! // wrong comment, see Merging.cc line 3304 
         //+ pow2(as0 / (4.*M_PI) * BETA0 * log( (muR*muR) / (b*asScale)));
       w += exp;
       terms[s2.str()] += exp;
@@ -4289,9 +4287,6 @@ double DireHistory::weightPDFExpanded( int order, double as0,
 
 vector<double> DireHistory::pdfExpansion(int order, int side, int flav, double x,
   double t, double muf2, double mur2) {
-
-  const apfel::Grid g{{apfel::SubGrid{80,1e-5,3},
-    apfel::SubGrid{50,1e-1,3}, apfel::SubGrid{40,8e-1,3}}};
 
   // Return 0th, 1st and 2nd-order terms of expansion.
   vector<double> ret;
@@ -4855,6 +4850,8 @@ DireHistory::countEmissions(PartonLevel* trial, double maxscale,
 
   vector<double> wts;
   double mixed_expansion_wt = 0.;
+  double muF = mergingHooksPtr->muFinME();
+  double muR = mergingHooksPtr->muRinME();
 
   // Typically, we only want the expansion in terms of lowest-order
   // kernels, to avoid unnecessarily subtracting higher-order terms.
@@ -4958,8 +4955,7 @@ DireHistory::countEmissions(PartonLevel* trial, double maxscale,
       if ( fixpdf )
         //pdfs = pdfFactor( event, typeTrial, pTtrial,
         //                  mergingHooksPtr->muFinME() );
-        pdfs = pdfFactor( process, event, typeTrial, pTtrial,
-                          mergingHooksPtr->muFinME() );
+        pdfs = pdfFactor( process, event, typeTrial, pTtrial, muF);
     // Final state splittings.
     } else if ( (showerType == 1 || showerType == 2) && typeTrial >= 3 ) {
       // Get weight to translate to alpha_s at fixed renormalisation scale.
@@ -4967,8 +4963,7 @@ DireHistory::countEmissions(PartonLevel* trial, double maxscale,
       // Get weight to translate to PDFs at fixed factorisation scale. Needed
       // for final state splittings with initial state recoiler.
       if ( fixpdf )
-        pdfs = pdfFactor( process, event, typeTrial, pTtrial,
-                          mergingHooksPtr->muFinME() );
+        pdfs = pdfFactor( process, event, typeTrial, pTtrial, muF);
     }
 
     // Save weight correcting to emission generated with fixed scales.
@@ -4990,10 +4985,47 @@ DireHistory::countEmissions(PartonLevel* trial, double maxscale,
         vector<int> split = getSplittingPos(event, typeTrial);
         if ( event[split[2]].isFinal() && event[split[4]].isFinal()) b = 4.;
         w *= as0/(4.*M_PI) * BETA0 * log( pow2(minScale) / (b*pow2(pTtrial)));
+        //w *= as0/(4.*M_PI) * BETA0
+        //   * ( log(pow2(muR)/(b*pow2(pTtrial))) // running within Sudakov exponent
+        //     - log(pow2(muR)/pow2(minScale)) ); // expansion of alphaSratio * Sudakov|_1
         // Mixed terms should only depend on leading-order part of kernel
         if (kernel_base!=0.) w *= (kernel_base-kernel_base_oas2)/kernel_base;
         mixed_expansion_wt += w;
       }
+
+      if (order > 1 && mergingHooksPtr->settingsPtr->flag("Dire:doTOMTE:Sudakovs")) {
+        double kernel_base = psweights->getSelectedKernel(pow2(pTtrial), "base");
+        double kernel_base_oas2 = psweights->getSelectedKernel(pow2(pTtrial), "base_order_as2");
+
+        // Get radiators and recoilers before and after splitting.
+        vector<int> splitPos = getSplittingPos(event, typeTrial);
+        if (splitPos.size() < 5) cout << "Error at " << __FILE__ << " " << __LINE__ << endl;
+        int iRadBef = splitPos[0];
+        //int iRecBef = splitPos[1];
+        int iRadAft = splitPos[2];
+        //int iRecAft = splitPos[3];
+
+        // Find flavour and x values.
+        int flavAft    = event[iRadAft].id();
+        int flavBef    = event[iRadBef].id();
+        double xAft    = 2.*event[iRadAft].e() / event[0].e();
+        double xBef    = 2.*event[iRadBef].e() / event[0].e();
+
+        int side = event[iRadAft].pz() > 0 ? 1 : -1;
+        BeamParticle* beam = side > 0 ? &beamA : &beamB;
+        double pdfDen = beam->xf(flavBef, xBef, pow2(muF)); 
+        double pdfNum = beam->xf(flavAft, xAft, pow2(muF)); 
+
+        vector<double> pdfExpNum = pdfExpansion(order, side, flavAft, xAft, pow2(pTtrial), pow2(muF), pow2(muR));
+        vector<double> pdfExpDen = pdfExpansion(order, side, flavBef, xBef, pow2(pTtrial), pow2(muF), pow2(muR));
+        //w *= sign(pTtrial - muR) * log( pow2(max(pTtrial,muR)) / pow2(min(pTtrial,muR)) ) *
+        w *= ( pdfExpNum[1] / pdfNum - pdfExpDen[1] / pdfDen);
+        // Mixed terms should only depend on leading-order part of kernel
+        if (kernel_base!=0.) w *= (kernel_base-kernel_base_oas2)/kernel_base;
+        mixed_expansion_wt += w;
+      }
+
+
     }
   }
 
@@ -5010,7 +5042,7 @@ DireHistory::countEmissions(PartonLevel* trial, double maxscale,
 
   // Add mixed-expansion term to to third entry of return vector.
   // Note: This term does not include (Delta|_O(as1))^2 contributions,
-  // since these would anyway cancel in the final result.
+  // since these would anyway cancel in the final result.   // wrong comment????? 
   if (order>1 && result.size()>2) result[2] += mixed_expansion_wt; 
 
   // Reset trialShower object
