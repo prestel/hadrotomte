@@ -14,6 +14,7 @@
 #endif
 
 #include "DirePlugins/Flux/NeutrinoFlux.h"
+#include "DirePlugins/ApfelHooks.h"
 
 //#include "DirePlugins/BiasDIS.h"
 
@@ -565,9 +566,14 @@ int main( int argc, char* argv[] ){
     //pythiaPtr[i]->setUserHooksPtr(biasDIS);
   }
 
+  string pdfSet = pythiaPtr.front()->word("PDF:pHardSet");
+  ApfelHooks* apfelHooks = new ApfelHooks();
+
   for (int i = 0; i < int(direPtr.size()); ++i)
     if (!run_default_pythia) {
-      direPtr[i]->init(*pythiaPtr[i], input_file[i].c_str());
+      //direPtr[i]->init(*pythiaPtr[i], input_file[i].c_str());
+      //direPtr[i]->init(*pythiaPtr[i], input_file[i].c_str(), -999, NULL);
+      direPtr[i]->init(*pythiaPtr[i], input_file[i].c_str(), -999, NULL, apfelHooks);
     } else {
       if (i < int(input_file.size()) && input_file[i] != "")
         pythiaPtr[i]->readFile(input_file[i].c_str());
@@ -1346,48 +1352,48 @@ if (std::isnan(evtweight*pswt)) {
       //}
 
       if (!run_default_pythia) {
-      if (pythiaPtr[j]->settings.flag("Variations:doVariations")) { 
-        pswts.push_back(direPtr[j]->weightsPtr->getShowerWeight("base"));
-        pswts_names.push_back("Weight");
-        bool hasupvar(false), hasdownvar(false);
-        double uvar(1.), dvar(1.);
-        // Get ISR variations.
-        if ( pythiaPtr[j]->settings.flag("PartonLevel:ISR")) {
-          if ( pythiaPtr[j]->settings.parm("Variations:muRisrUp") != 1.) {
-            hasupvar=true;
-            uvar *= direPtr[j]->weightsPtr->getShowerWeight("Variations:muRisrUp");
+        if (pythiaPtr[j]->settings.flag("Variations:doVariations")) { 
+          pswts.push_back(direPtr[j]->weightsPtr->getShowerWeight("base"));
+          pswts_names.push_back("Weight");
+          bool hasupvar(false), hasdownvar(false);
+          double uvar(1.), dvar(1.);
+          // Get ISR variations.
+          if ( pythiaPtr[j]->settings.flag("PartonLevel:ISR")) {
+            if ( pythiaPtr[j]->settings.parm("Variations:muRisrUp") != 1.) {
+              hasupvar=true;
+              uvar *= direPtr[j]->weightsPtr->getShowerWeight("Variations:muRisrUp");
+            }
+            if ( pythiaPtr[j]->settings.parm("Variations:muRisrDown") != 1.) {
+              hasdownvar=true;
+              dvar *= direPtr[j]->weightsPtr->getShowerWeight("Variations:muRisrDown");
+            }
           }
-          if ( pythiaPtr[j]->settings.parm("Variations:muRisrDown") != 1.) {
-            hasdownvar=true;
-            dvar *= direPtr[j]->weightsPtr->getShowerWeight("Variations:muRisrDown");
+          // Get FSR variations.
+          if ( pythiaPtr[j]->settings.flag("PartonLevel:FSR")) {
+            if ( pythiaPtr[j]->settings.parm("Variations:muRfsrUp") != 1.) {
+              hasupvar=true;
+              uvar *= direPtr[j]->weightsPtr->getShowerWeight("Variations:muRfsrUp");
+            }
+            if ( pythiaPtr[j]->settings.parm("Variations:muRfsrDown") != 1.) {
+              hasdownvar=true;
+              dvar *= direPtr[j]->weightsPtr->getShowerWeight("Variations:muRfsrDown");
+            }
           }
-        }
-        // Get FSR variations.
-        if ( pythiaPtr[j]->settings.flag("PartonLevel:FSR")) {
-          if ( pythiaPtr[j]->settings.parm("Variations:muRfsrUp") != 1.) {
-            hasupvar=true;
-            uvar *= direPtr[j]->weightsPtr->getShowerWeight("Variations:muRfsrUp");
-          }
-          if ( pythiaPtr[j]->settings.parm("Variations:muRfsrDown") != 1.) {
-            hasdownvar=true;
-            dvar *= direPtr[j]->weightsPtr->getShowerWeight("Variations:muRfsrDown");
-          }
-        }
-        if (hasupvar && abs(uvar) < LARGE_WT)   pswts.push_back(uvar);
-        else            pswts.push_back(0.0);
-        if (hasdownvar && abs(dvar) < LARGE_WT) pswts.push_back(dvar);
-        else            pswts.push_back(0.0);
+          if (hasupvar && abs(uvar) < LARGE_WT)   pswts.push_back(uvar);
+          else            pswts.push_back(0.0);
+          if (hasdownvar && abs(dvar) < LARGE_WT) pswts.push_back(dvar);
+          else            pswts.push_back(0.0);
 
-        ostringstream name;
-        name << "PSMUR" << pythiaPtr[j]->settings.parm("Variations:muRfsrUp");
-        pswts_names.push_back(name.str());
-        name.str("");
-        name << "PSMUR" << pythiaPtr[j]->settings.parm("Variations:muRfsrDown");
-        pswts_names.push_back(name.str());
+          ostringstream name;
+          name << "PSMUR" << pythiaPtr[j]->settings.parm("Variations:muRfsrUp");
+          pswts_names.push_back(name.str());
+          name.str("");
+          name << "PSMUR" << pythiaPtr[j]->settings.parm("Variations:muRfsrDown");
+          pswts_names.push_back(name.str());
 
         } else {
-        pswts.push_back(pswt);
-        pswts_names.push_back("Weight");
+          pswts.push_back(pswt);
+          pswts_names.push_back("Weight");
         }
 
       } else {
@@ -1511,7 +1517,7 @@ if (std::isnan(evtweight*pswt)) {
           pythiaPtr[j]->info.setEventAttribute("matched_weight",
             std::to_string(1.));
         }
-
+      }
     }
   }
 #endif
@@ -1601,6 +1607,7 @@ if (std::isnan(evtweight*pswt)) {
     delete pythiaPtr[i]; pythiaPtr[i]=0;
   }
 
+  delete apfelHooks;
   // Done.
   return 0;
 

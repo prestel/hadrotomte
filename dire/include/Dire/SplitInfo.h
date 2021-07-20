@@ -29,7 +29,8 @@ public:
   DireSingleColChain() {}
   DireSingleColChain(const DireSingleColChain& chainIn) : chain(chainIn.chain),
     original_chain(chainIn.original_chain) {}
-
+  DireSingleColChain & operator=(const DireSingleColChain& c) { if (this != &c)
+    { chain = c.chain;  original_chain = c.original_chain;} return *this; }
   DireSingleColChain(int iPos, const Event& state, PartonSystems* partonSysPtr);
 
   void addToChain(const int iPos, const Event& state);

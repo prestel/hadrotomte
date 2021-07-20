@@ -96,6 +96,26 @@ public:
     idEmtAft(dip.idEmtAft), iSpectator(dip.iSpectator),
     allowedEmissions(dip.allowedEmissions), iSiblings(dip.iSiblings) {}
 
+  DireTimesEnd & operator=(const DireTimesEnd& t) { if (this != &t)
+    { iRadiator = t.iRadiator; iRecoiler = t.iRecoiler; pTmax = t.pTmax;
+      colType = t.colType; chgType = t.chgType; gamType = t.gamType;
+      weakType = t.weakType; isrType = t.isrType; system = t.system;
+      systemRec = t.systemRec; MEtype = t.MEtype; iMEpartner = t.iMEpartner;
+      weakPol = t.weakPol; isOctetOnium = t.isOctetOnium;
+      isHiddenValley = t.isHiddenValley; colvType = t.colvType;
+      MEmix = t.MEmix; MEorder = t.MEorder; MEsplit = t.MEsplit;
+      MEgluinoRec = t.MEgluinoRec; isFlexible = t.isFlexible;
+      flavour = t.flavour; iAunt = t.iAunt;
+      mRad = t.mRad; m2Rad = t.m2Rad; mRec = t.mRec; m2Rec = t.m2Rec;
+      mDip = t.mDip; m2Dip = t.m2Dip; m2DipCorr = t.m2DipCorr; pT2 = t.pT2;
+      m2 = t.m2; z = t.z; mFlavour = t.mFlavour; asymPol = t.asymPol;
+      flexFactor = t.flexFactor; phi = t.phi; pT2start = t.pT2start;
+      pT2stop = t.pT2stop; pT2Old = t.pT2Old; sa1 = t.sa1; xa = t.xa;
+      phia1 = t.phia1; mass = t.mass; idRadAft = t.idRadAft;
+      idEmtAft = t.idEmtAft; iSpectator = t.iSpectator;
+      allowedEmissions = t.allowedEmissions; iSiblings = t.iSiblings;}
+    return *this; }
+
   // Basic properties related to dipole and matrix element corrections.
   int    iRadiator, iRecoiler;
   double pTmax;

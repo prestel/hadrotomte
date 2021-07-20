@@ -609,7 +609,7 @@ void Dire::setup( Pythia& pythia) {
   }
 
   helpers.setPointers(&pythia.partonSystems, &pythia.particleData,
-    &pythia.settings, &direInfo);
+    &pythia.settings, &direInfo, hooksPtr);
 
   // If Pythia has, for ominous reasons, not initialized the spacelike shower,
   // retry to initialize from timelike shower beams.
@@ -672,6 +672,8 @@ void Dire::setup( Pythia& pythia) {
     hooksPtr->initPtr( &pythia.info, &pythia.settings, &pythia.particleData,
       &pythia.rndm, spacePtr->getBeamA(), spacePtr->getBeamB(),
       &pythia.couplings, &pythia.partonSystems);
+
+  hooksPtr->init();
 
   splittings->setKernelHooks(hooksPtr);
 

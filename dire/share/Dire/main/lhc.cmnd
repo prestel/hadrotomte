@@ -1,11 +1,11 @@
 
 # Number of events to generate.
-Main:numberOfEvents       = 10000
+Main:numberOfEvents       = 1000
 
 # Set PDFs for hard process and showering.
-#PDF:useHard               = on
-#PDF:pSet                  = LHAPDF6:CT10nlo 
-#PDF:pHardSet              = LHAPDF6:CT10nlo
+PDF:useHard               = on
+PDF:pSet                  = LHAPDF6:MMHT2014nlo68cl 
+PDF:pHardSet              = LHAPDF6:MMHT2014nlo68cl
 
 # Set alphaS(mZ) value and running.
 SpaceShower:alphaSvalue   = 0.1201

@@ -14,6 +14,7 @@
 #endif
 
 #include "DirePlugins/Flux/NeutrinoFlux.h"
+#include "DirePlugins/ApfelHooks.h"
 
 //#include "DirePlugins/BiasDIS.h"
 
@@ -565,9 +566,13 @@ int main( int argc, char* argv[] ){
     //pythiaPtr[i]->setUserHooksPtr(biasDIS);
   }
 
+  // TODO: Need to parse this to get the PDF set name.
+  // string pdfSet = pythiaPtr.front()->word("PDF:pHardSet");
+  ApfelHooks* apfelHooks = new ApfelHooks();
+
   for (int i = 0; i < int(direPtr.size()); ++i)
     if (!run_default_pythia) {
-      direPtr[i]->init(*pythiaPtr[i], input_file[i].c_str());
+      direPtr[i]->init(*pythiaPtr[i], input_file[i].c_str(), -999, NULL, apfelHooks);
     } else {
       if (i < int(input_file.size()) && input_file[i] != "")
         pythiaPtr[i]->readFile(input_file[i].c_str());
@@ -1601,6 +1606,7 @@ if (std::isnan(evtweight*pswt)) {
     delete pythiaPtr[i]; pythiaPtr[i]=0;
   }
 
+  delete apfelHooks;
   // Done.
   return 0;
 

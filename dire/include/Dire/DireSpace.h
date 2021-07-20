@@ -83,6 +83,23 @@ public:
       phia1(dip.phia1), mass(dip.mass), iSpectator(dip.iSpectator),
       allowedEmissions(dip.allowedEmissions), iSiblings(dip.iSiblings) {}
 
+  // Assignment operator.
+  DireSpaceEnd & operator=(const DireSpaceEnd &s) { if (this != &s)
+    { system = s.system; side = s.side; iRadiator = s.iRadiator;
+      iRecoiler = s.iRecoiler; pTmax = s.pTmax; colType = s.colType;
+      chgType = s.chgType; weakType = s.weakType; MEtype = s.MEtype;
+      normalRecoil = s.normalRecoil; weakPol = s.weakPol;
+      nBranch = s.nBranch; idDaughter = s.idDaughter; idMother = s.idMother;
+      idSister = s.idSister; iFinPol = s.iFinPol; x1 = s.x1; x2 = s.x2;
+      m2Dip = s.m2Dip; pT2 = s.pT2; z = s.z; xMo = s.xMo; Q2 = s.Q2;
+      mSister = s.mSister; m2Sister = s.m2Sister; pT2corr = s.pT2corr;
+      pT2Old = s.pT2Old; zOld = s.zOld; asymPol = s.asymPol; phi = s.phi;
+      pT2start = s.pT2start; pT2stop = s.pT2stop;
+      mRad = s.mRad; m2Rad = s.m2Rad; mRec = s.mRec; m2Rec = s.m2Rec;
+      mDip = s.mDip; sa1 = s.sa1; xa = s.xa; phia1 = s.phia1; mass = s.mass;
+      iSpectator = s.iSpectator; allowedEmissions = s.allowedEmissions;
+      iSiblings = s.iSiblings;} return *this; }
+
   // Store values for trial emission.
   void store( int idDaughterIn, int idMotherIn, int idSisterIn,
     double x1In, double x2In, double m2DipIn, double pT2In, double zIn,

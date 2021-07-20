@@ -6,9 +6,11 @@
 
 #include "Pythia8/PythiaStdlib.h"
 
-#include "Dire/Splittings.h"
+//#include "Dire/Splittings.h"
 
 namespace Pythia8 {
+
+class DireSplitting;
 
 //==========================================================================
 
@@ -37,7 +39,10 @@ public:
   }
 
   // Initialisation after beams have been set by Pythia::init().
-  virtual bool init() { return true; }
+  virtual bool init() {
+    initPDFexpansion();
+    return true;
+  }
 
   // Possibility for user-defined splitting kernels.
   virtual bool canLoadFSRKernels() {return false;}
@@ -68,11 +73,16 @@ public:
     return -1.0;
   }
 
-protected:
-
   // Constructor.
   DireHooks() : infoPtr(0), settingsPtr(0), particleDataPtr(0), rndmPtr(0),
     beamAPtr(0), beamBPtr(0), coupSMPtr(0), partonSystemsPtr(0) {}
+
+  virtual void initPDFexpansion() { return; }
+  virtual double getPDFexpansion(int, int, double, double, double, double) {
+     return 0.;
+  }
+
+protected:
 
   // Pointer to various information on the generation.
   Info*          infoPtr;

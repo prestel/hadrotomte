@@ -4288,7 +4288,7 @@ double DireHistory::weightPDFExpanded( int order, double as0,
 //--------------------------------------------------------------------------
 
 vector<double> DireHistory::pdfExpansion(int order, int side, int flav, double x,
-  double t, double muf, double mur) {
+  double t, double muf2, double mur2) {
 
   const apfel::Grid g{{apfel::SubGrid{80,1e-5,3},
     apfel::SubGrid{50,1e-1,3}, apfel::SubGrid{40,8e-1,3}}};
@@ -4298,6 +4298,8 @@ vector<double> DireHistory::pdfExpansion(int order, int side, int flav, double x
   ret.push_back(1.);
   ret.push_back(0.);
   ret.push_back(0.);
+
+  fsr->helpersPtr->hooks->getPDFexpansion(order, flav, x, t, muf2, mur2);
 
   return ret;
 

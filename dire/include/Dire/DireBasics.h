@@ -11,6 +11,8 @@
 
 using std::unordered_map;
 
+#include "Dire/Hooks.h"
+
 namespace Pythia8 {
 
 typedef unsigned long ulong;
@@ -994,13 +996,15 @@ class DireHelpers {
   public: 
 
   void setPointers (PartonSystems* pSysIn, ParticleData*  pDataIn,
-    Settings* settingsIn, DireInfo* direInfoPtrIn) {
+    Settings* settingsIn, DireInfo* direInfoPtrIn, DireHooks* hooksIn) {
     evtUtils.setPointers (pSysIn, pDataIn, settingsIn, direInfoPtrIn);
     kinRels.setPointers (pSysIn, pDataIn, settingsIn);
+    hooks = hooksIn;
   }
 
   DireEventUtils evtUtils;
   DireKinRelations kinRels;
+  DireHooks* hooks;
 
 };
 

@@ -151,6 +151,15 @@ public:
       spinRadBef(spinRadBefIn), radBef(radBefIn), recBef(recBefIn),
       splitName(splitNameIn), isAboveCutoff(isAboveCutoffIn) {}
 
+  // Assignment operator.
+  DireClustering & operator=(const DireClustering& c) { if (this != &c)
+    { radPos = c.radPos; emt1Pos = c.emt1Pos; emt2Pos = c.emt2Pos;
+      recPos = c.recPos; partner = c.partner; pTscale = c.pTscale;
+      radSave = c.radSave; emt1Save = c.emt1Save; emt2Save = c.emt2Save;
+      recSave = c.recSave; flavRadBef = c.flavRadBef;
+      spinRadBef = c.spinRadBef; radBef = c.radBef; recBef = c.recBef;
+      splitName = c.splitName; isAboveCutoff = c.isAboveCutoff;} return *this; }
+
   // Function to return pythia pT scale of clustering
   double pT() const { return pTscale; }
 

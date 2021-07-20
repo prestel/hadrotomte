@@ -48,6 +48,15 @@ public:
     for (int j = 0; j < 8; ++j) if (prod[j] != 0 && j == nProd) ++nProd; }
 
   // Copy constructor.
+  DecayChannel( const DecayChannel& oldDC) {
+    onModeSave = oldDC.onModeSave; bRatioSave = oldDC.bRatioSave;
+    currentBRSave = oldDC.currentBRSave;
+    onShellWidthSave = oldDC.onShellWidthSave; openSecPos = oldDC.openSecPos;
+    openSecNeg = oldDC.openSecNeg; meModeSave = oldDC.meModeSave;
+    nProd = oldDC.nProd; for (int j = 0; j < 8; ++j) prod[j] = oldDC.prod[j];
+    hasChangedSave = oldDC.hasChangedSave; }
+
+  // Copy constructor.
   DecayChannel& operator=( const DecayChannel& oldDC) { if (this != &oldDC) {
     onModeSave = oldDC.onModeSave; bRatioSave = oldDC.bRatioSave;
     currentBRSave = oldDC.currentBRSave;
