@@ -7,6 +7,8 @@
 
 using namespace Pythia8;
 
+#include "DirePlugins/ApfelHooks.h"
+
 //==========================================================================
 
 int main( int argc, char* argv[]  ){
@@ -23,9 +25,11 @@ int main( int argc, char* argv[]  ){
 
   Pythia pythia;
 
+  ApfelHooks* apfelHooks = new ApfelHooks();
+
   // Create and initialize DIRE shower plugin.
   Dire dire;
-  dire.init(pythia, "lep.cmnd");
+  dire.init(pythia, "lhc.cmnd", -999, NULL, apfelHooks);
 
   // Jet finder for some of the histograms.
   SlowJet* slowJet = new SlowJet(-1, 1.0, 20., 4.4, 2, 2, NULL, false);
