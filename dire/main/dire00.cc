@@ -5,9 +5,9 @@
 // Pythia includes.
 #include "Pythia8/Pythia.h"
 
-using namespace Pythia8;
-
 #include "DirePlugins/ApfelHooks.h"
+
+using namespace Pythia8;
 
 //==========================================================================
 
