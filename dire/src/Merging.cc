@@ -3265,12 +3265,82 @@ int DireMerging::createMatchedEventsForN3LO () {
         it != weightsExp.end(); ++it )
         cout << " " << it->first << " " << it->second << endl;
 
+    vector<double> oas1, a1, a2, b1, b2, w1, w2;
+    for ( map<string,double>::iterator
+      it = weightsExp.begin();
+      it != weightsExp.end(); ++it ) {
+      if ( it->first.find("0_1") != string::npos || it->first.find("1_1") != string::npos )
+        oas1.push_back(it->second);
+      if ( it->first.find("pdfratio_num") != string::npos) {
+        if (it->first.find("0_1") != string::npos || it->first.find("1_1")!= string::npos )
+          a1.push_back(it->second);
+        if (it->first.find("0_2") != string::npos || it->first.find("1_2")!= string::npos )
+          a2.push_back(it->second);
+      } else if ( it->first.find("pdfratio_den") != string::npos) {
+        if (it->first.find("0_1") != string::npos || it->first.find("1_1")!= string::npos )
+          b1.push_back(it->second);
+        if (it->first.find("0_2") != string::npos || it->first.find("1_2")!= string::npos )
+          b2.push_back(it->second);
+      } else {
+        if (it->first.find("0_1") != string::npos || it->first.find("1_1")!= string::npos )
+          w1.push_back(it->second);
+        if (it->first.find("0_2") != string::npos || it->first.find("1_2")!= string::npos )
+          w2.push_back(it->second);
+      }
+    }
+
+cout << __LINE__ << " : Add mix wt " << weightsExp["alphasratio_1_1"]*weightsExp["delta_0_1"] << endl;
+
+    double wgt1DoubleSubt_tmp = 0.;
+
+    // O(as^2) term of weight expansion.
+    double tmp=0.;
+    for (int i=0; i < (int)a1.size(); ++i) {
+      for (int j=i+1; j < (int)a1.size(); ++j) tmp -= a1[i]*a1[j];
+      for (int j = 0; j < (int)w1.size(); ++j) tmp -= a1[i]*w1[j];
+      for (int j = 0; j < (int)b1.size(); ++j) tmp -= a1[i]*b1[j];
+    }
+
+    for (int i=0; i < (int)w1.size(); ++i) {
+      for (int j=i+1; j < (int)w1.size(); ++j) tmp -= w1[i]*w1[j];
+      for (int j = 0; j < (int)b1.size(); ++j) tmp -= w1[i]*b1[j];
+    }
+
+    for (int i=0; i < (int)b1.size(); ++i) {
+      for (int j=i+1; j < (int)b1.size(); ++j) tmp -= b1[i]*b1[j];
+    }
+
+    for (int i=0; i < (int)a2.size(); ++i) tmp -= a2[i];
+    for (int i=0; i < (int)b2.size(); ++i) tmp -= b2[i];
+    for (int i=0; i < (int)w2.size(); ++i) tmp -= w2[i];
+
+    for (int i=0; i < (int)b1.size(); ++i) tmp -= pow2(b1[i]);
+
+    // O(as^2) term of weight expansion.
+    // Mixed terms:
+    double tmp2=0.;
+    for (int i=0; i < (int)oas1.size(); ++i)
+      for (int j=i+1; j < (int)oas1.size(); ++j)
+        tmp2 -= oas1[i]*oas1[j];
+    // Mixed terms due to PDF denominators
+    for (int i=0; i < (int)b1.size(); ++i) tmp2 -= pow2(b1[i]);
+    // 'Genuine' O(as^2) terms:
+    for (int i=0; i < (int)a2.size(); ++i) tmp2 -= a2[i];
+    for (int i=0; i < (int)b2.size(); ++i) tmp2 -= b2[i];
+    for (int i=0; i < (int)w2.size(); ++i) tmp2 -= w2[i];
+    // O(as^2) contribution from O(as)-term of weight multiplying
+    // O(as)-expansion
+    for (int i=0; i < (int)oas1.size(); ++i)
+      for (int j=0; j < (int)oas1.size(); ++j) 
+        tmp2 += oas1[i]*oas1[j];
+
+    // Note: 0.5*(delta_1)^2 is typically converging **very slowly** to the
+    // iterated integral (~one digit precision after 20K trial showers).
+    // So should probably do the cancellation "by hand" in the 2nd-order expansion...
+
+cout << tmp << " " << tmp2 << endl;
 
 abort();
-
-
-
-
 
 
 
