@@ -130,8 +130,12 @@ public:
 
     // LO
     double exppdf = f00.at(flav).Evaluate(x);
+
+    // NLO
     if (order > 1)
       exppdf += LF * f10.at(flav).Evaluate(x);
+
+    // NNLO
     if (order > 2)
       exppdf += LF * f20.at(flav).Evaluate(x)
         + ( LF / 2 - LR ) * LF * f21.at(flav).Evaluate(x)
