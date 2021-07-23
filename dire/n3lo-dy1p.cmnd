@@ -17,6 +17,9 @@ Dire:doExitAfterMerging = on
 Merging:includeWeightinXsection = off
 Merging:applyVeto = off
 
+Merging:muFacInME = 91.188
+Merging:muRenInME = 91.188
+
 Main:numberOfEvents         = 10 ! number of events generated
 Beams:frameType             = 4
 //next:numbercount = 1

@@ -42,16 +42,20 @@ public:
     const int member = 1;
 
     // Renormalisation and factorisation scales (pick two values)
-    const double muf2 = pow(100, 2);
-    const double mur2 = pow(50, 2);
+    //const double muf2 = pow2(100);
+    //const double mur2 = pow2(50);
+    const double muf = settingsPtr->parm("Merging:muFacInME");
+    const double mur = settingsPtr->parm("Merging:muRacInME");
+    const double muf2 = pow2(muf);
+    const double mur2 = pow2(mur);
 
     // Initialise x-space grid of APFEL++
     const apfel::Grid g{{{80, 1e-5, 3}, {50, 1e-1, 3}, {40, 8e-1, 3}}};
     //////////////////////////////////////////////////////////////////
 
     // Linear scales
-    const double muf = sqrt(muf2);
-    const double mur = sqrt(mur2);
+    //const double muf = sqrt(muf2);
+    //const double mur = sqrt(mur2);
 
     // Get PDF set
     ::LHAPDF::PDF *pdf = pdfs[member];
@@ -123,6 +127,7 @@ public:
     // convension is used: d = 1, dbar = -1, u = 2, ubar = -2, s = 3,
     // sbar = -3, etc.
     /////////////////////////////////////////////////////////////////
+    if (flav==21) flav = 0;
 
     // Log of the scales
     const double LR = log(mur2 / q2);

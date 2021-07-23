@@ -113,12 +113,12 @@ dire : $$@.cc
 dire-new : $$@.cc
 	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)''"
 	$(CXX) $^ -o $@ $(DIRE_CONFIG)
-#dire% : $$@.cc
-#	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)'' -L$(APFEL_LIB) -Wl,-rpath,$(APFEL_LIB) -lapfelxx"
-#	$(CXX) $^ -o $@ $(DIRE_CONFIG) -L$(APFEL_LIB) -Wl,-rpath,$(APFEL_LIB) -lapfelxx
 dire% : $$@.cc
-	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)''"
-	$(CXX) $^ -o $@ $(DIRE_CONFIG)
+	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)'' -L$(APFEL_LIB) -Wl,-rpath,$(APFEL_LIB) -lapfelxx"
+	$(CXX) $^ -o $@ $(DIRE_CONFIG) -I$(APFEL_INC) -L$(APFEL_LIB) -Wl,-rpath,$(APFEL_LIB) -lapfelxx
+#dire% : $$@.cc
+#	@echo "Default compilation with ''$(CXX) $^ -o $@ $(DIRE_CONFIG)''"
+#	$(CXX) $^ -o $@ $(DIRE_CONFIG)
 
 # Make DIRE main programs with HepMC dependence.
 dire01 dire02 dire03 dire022: $$@.cc $(DIRE_LIB)/libdire$(DIRE_LIB_SUFFIX)\
