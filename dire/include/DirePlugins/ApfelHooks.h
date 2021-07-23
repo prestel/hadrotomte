@@ -45,7 +45,7 @@ public:
     //const double muf2 = pow2(100);
     //const double mur2 = pow2(50);
     const double muf = settingsPtr->parm("Merging:muFacInME");
-    const double mur = settingsPtr->parm("Merging:muRacInME");
+    const double mur = settingsPtr->parm("Merging:muRenInME");
     const double muf2 = pow2(muf);
     const double mur2 = pow2(mur);
 

@@ -40,7 +40,26 @@ int main( int argc, char* argv[]  ){
   double sumwt = 0.;
   double sumwtsq = 0.;
 
-  // Start generation loop
+  double tmax = pow2(1000.);
+  double tmin = pow2(1.);
+  double xmax = 1.-1e-5;
+  double xmin = 1e-5;
+  int NTSTEPS = 1000;
+  int NXSTEPS = 1000;
+
+  double muf2 = pow2(pythia.settings.parm("Merging:muFacInME"));
+  double mur2 = pow2(pythia.settings.parm("Merging:muRenInME"));
+
+  for (int it=0; it < NTSTEPS; ++it) {
+    double tnow = tmin + double(it)*(tmax-tmin);
+    for (int ix=0; ix < NXSTEPS; ++ix) {
+      double xnow = xmin + double(ix)*(xmax-xmin);
+      double pdfexpnow = apfelHooks->getPDFexpansion(1, 1, xnow, tnow, muf2, mur2);
+    }
+  }
+
+
+  /*// Start generation loop
   int nEvent = pythia.settings.mode("Main:numberOfEvents");
   for( int iEvent=0; iEvent<nEvent; ++iEvent ){
 
@@ -115,7 +134,7 @@ int main( int argc, char* argv[]  ){
        << "\n\t Variance of shower weight="
        << sqrt(1/double(nEvent)*(sumwtsq - pow(sumwt,2)/double(nEvent)))
        << endl << endl;
-
+  */
   // Done
   return 0;
 

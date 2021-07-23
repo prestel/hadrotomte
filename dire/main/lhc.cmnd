@@ -13,6 +13,9 @@ TimeShower:alphaSvalue    = 0.1201
 SpaceShower:alphaSorder   = 2
 TimeShower:alphaSorder    = 2
 
+Merging:muFacInME = 91.188
+Merging:muRenInME = 91.188
+
 # LHC beam setup
 Beams:idA                 = 2212
 Beams:idB                 = 2212
