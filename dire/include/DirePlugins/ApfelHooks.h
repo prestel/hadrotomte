@@ -28,6 +28,9 @@ public:
   ::LHAPDF::PDFSet info;
   vector< ::LHAPDF::PDF* > pdfs;
 
+  // APFEL++ x-space grid
+  std::unique_ptr<const apfel::Grid> g;
+
   // Terms of the expansion of the PDF evolution
   std::map<int, apfel::Distribution> f00;
   std::map<int, apfel::Distribution> f10;
@@ -46,16 +49,10 @@ public:
     //const double mur2 = pow2(50);
     const double muf = settingsPtr->parm("Merging:muFacInME");
     const double mur = settingsPtr->parm("Merging:muRenInME");
-    const double muf2 = pow2(muf);
-    const double mur2 = pow2(mur);
 
     // Initialise x-space grid of APFEL++
-    const apfel::Grid g{{{80, 1e-5, 3}, {50, 1e-1, 3}, {40, 8e-1, 3}}};
+    g = std::unique_ptr<const apfel::Grid>(new apfel::Grid({{80, 1e-5, 3}, {50, 1e-1, 3}, {40, 8e-1, 3}}));
     //////////////////////////////////////////////////////////////////
-
-    // Linear scales
-    //const double muf = sqrt(muf2);
-    //const double mur = sqrt(mur2);
 
     // Get PDF set
     ::LHAPDF::PDF *pdf = pdfs[member];
@@ -75,7 +72,7 @@ public:
 
     // Initialize DGLAP objects on the grid (this contains the
     // splitting functions on the grid).
-    const auto DglapObj = apfel::InitializeDglapObjectsQCD(g, Thresholds);
+    const auto DglapObj = apfel::InitializeDglapObjectsQCD(*g, Thresholds);
 
     // Rotate PDF set into the QCD evolution basis
     const auto RotPDFs = [=] (double const& x, double const& mu) ->
@@ -85,7 +82,7 @@ public:
     // basis at the scale muf
     const apfel::Set<apfel::Distribution> pdfmuf
     {apfel::EvolutionBasisQCD{apfel::NF(muf, Thresholds)},
-        DistributionMap(g, RotPDFs, muf)};
+        DistributionMap(*g, RotPDFs, muf)};
 
     // Get splitting functions with the correct number of active
     // flavours determined by muf and do the convolutions with the
@@ -127,7 +124,7 @@ public:
     // convension is used: d = 1, dbar = -1, u = 2, ubar = -2, s = 3,
     // sbar = -3, etc.
     /////////////////////////////////////////////////////////////////
-    if (flav==21) flav = 0;
+    if (flav == 21) flav = 0;
 
     // Log of the scales
     const double LR = log(mur2 / q2);
@@ -144,7 +141,7 @@ public:
     if (order > 1)
       exppdf += LF * f20.at(flav).Evaluate(x)
         + ( LF / 2 - LR ) * LF * f21.at(flav).Evaluate(x)
-        + ( LF / 2 ) * f22.at(flav).Evaluate(x);
+        + ( pow2(LF) / 2 ) * f22.at(flav).Evaluate(x);
 
     return exppdf;
   }
