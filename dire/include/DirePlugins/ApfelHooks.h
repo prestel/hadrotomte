@@ -130,15 +130,18 @@ public:
     const double LR = log(mur2 / q2);
     const double LF = log(muf2 / q2);
 
+    double exppdf = 0.;
+
     // LO
-    double exppdf = f00.at(flav).Evaluate(x);
+    if (order == 0)
+      exppdf = f00.at(flav).Evaluate(x);
 
     // NLO
-    if (order > 0)
+    else if (order == 1)
       exppdf += LF * f10.at(flav).Evaluate(x);
 
     // NNLO
-    if (order > 1)
+    else if (order > 1)
       exppdf += LF * f20.at(flav).Evaluate(x)
         + ( LF / 2 - LR ) * LF * f21.at(flav).Evaluate(x)
         + ( pow2(LF) / 2 ) * f22.at(flav).Evaluate(x);

@@ -4067,9 +4067,8 @@ double DireHistory::weightAlphasExpanded( int order, double as0, double muR,
     }
     if (order == 2 || order == 12) {
       double exp
-        = pow2(as0 / (4.*M_PI)) * BETA1 * log( (muR*muR) / (b*asScale));
-        // not included because it would anyway cancel in the final result! // wrong comment, see Merging.cc line 3304 
-        //+ pow2(as0 / (4.*M_PI) * BETA0 * log( (muR*muR) / (b*asScale)));
+        = pow2(as0 / (4.*M_PI)) * BETA1 * log( (muR*muR) / (b*asScale))
+        + pow2(as0 / (4.*M_PI)  * BETA0 * log( (muR*muR) / (b*asScale)));
       w += exp;
       terms[s2.str()] += exp;
     }
@@ -4305,7 +4304,7 @@ double DireHistory::weightPDFExpanded( int order, double as0,
 
 //--------------------------------------------------------------------------
 
-vector<double> DireHistory::pdfExpansion(int order, int side, int flav, double x,
+vector<double> DireHistory::pdfExpansion(int order, int /*side*/, int flav, double x,
   double t, double muf2, double mur2) {
 
   // Return 0th, 1st and 2nd-order terms of expansion.
@@ -4314,17 +4313,25 @@ vector<double> DireHistory::pdfExpansion(int order, int side, int flav, double x
   //ret.push_back(0.1);
   //ret.push_back(0.01);
 
-  if (side>0) ret[0] = max(1e-10,beamA.xfHard( flav, x, muf2));
-  else        ret[0] = max(1e-10,beamB.xfHard( flav, x, muf2));
+  //if (side>0) ret[0] = max(1e-10,beamA.xfHard( flav, x, muf2));
+  //else        ret[0] = max(1e-10,beamB.xfHard( flav, x, muf2));
+
+  ret[0] = fsr->helpersPtr->hooks->getPDFexpansion(0,flav,x,t,muf2,mur2);
 
   if (abs(t-muf2)<1e-5) return ret;
 
-  ret[1] = 0.1;
-  ret[2] = 0.01;
+  //ret[1] = 0.1;
+  //ret[2] = 0.01;
+
+  if (order == 1 || order == 12)
+    ret[1] = fsr->helpersPtr->hooks->getPDFexpansion(1,flav,x,t,muf2,mur2);
+ 
+  if (order == 2 || order == 12)
+    ret[2] = fsr->helpersPtr->hooks->getPDFexpansion(2,flav,x,t,muf2,mur2);
 
   //ret[0] = max(1e-10,beamA.xfHard( flav, x, muf2));
 
-  fsr->helpersPtr->hooks->getPDFexpansion(order, flav, x, t, muf2, mur2);
+
 
   return ret;
 
@@ -4358,14 +4365,12 @@ double DireHistory::weightEmissionsExpanded(int order, PartonLevel* trial,
   // Generate true average.
   double nWeight1 = 0.;
   double nWeight2 = 0.;
-double auxw = 0.;
-  for(int i=0; i < NTRIAL*10000; ++i) {
+  for(int i=0; i < NTRIAL/**10000*/; ++i) {
     // Get number of emissions
     vector<double> unresolvedEmissionTerm = countEmissions(trial,
       maxscale, newScale, 2, as0, asFSR, asISR, 3, fixpdf, fixas, order);
     nWeight1 += (order == 1 || order == 12) ? unresolvedEmissionTerm[1] : 0.;
     nWeight2 += (order == 2 || order == 12) ? unresolvedEmissionTerm[2] : 0.;
-auxw += unresolvedEmissionTerm.back();
   }
 
   if (order == 1 || order == 12) {
@@ -4377,10 +4382,6 @@ auxw += unresolvedEmissionTerm.back();
     w += nWeight2/double(NTRIAL);
     terms[s2.str()] += nWeight2/double(NTRIAL);
   }
-
-  terms["aux"] += auxw/double(NTRIAL);
-
-cout << __LINE__ << " " << 0.5*pow2(nWeight1/double(NTRIAL*10000)) << " " << nWeight2/double(NTRIAL*10000) << endl;
 
   // Done
   return w;
@@ -4889,8 +4890,6 @@ DireHistory::countEmissions(PartonLevel* trial, double maxscale,
   double muF = mergingHooksPtr->muFinME();
   double muR = mergingHooksPtr->muRinME();
 
-  double mixsum=0.;
-
   // Typically, we only want the expansion in terms of lowest-order
   // kernels, to avoid unnecessarily subtracting higher-order terms.
   int kernelOrderFSROld = fsr->getKernelOrder();
@@ -5013,7 +5012,6 @@ DireHistory::countEmissions(PartonLevel* trial, double maxscale,
       double lo_kernel = (kernel_base-kernel_base_oas2)/kernel_base;
       double nlo_kernel = kernel_base_oas2/kernel_base;
 
-      //pair<double,double> wtShower = psweights->getWeight(pow2(pTtrial));
       double w = as0/alphaSinPS * pdfs * wtShower.first * 1./enhancement * lo_kernel;
       wts.push_back(w);
 
@@ -5032,19 +5030,9 @@ DireHistory::countEmissions(PartonLevel* trial, double maxscale,
         vector<int> split = getSplittingPos(event, typeTrial);
         if ( event[split[2]].isFinal() && event[split[4]].isFinal()) b = 4.;
         double basewt = w;
-        double mixwt  = as0/(4.*M_PI) * BETA0 * log( pow2(minScale) / (b*pow2(pTtrial)));
-        //w *= as0/(4.*M_PI) * BETA0
-        //   * ( log(pow2(muR)/(b*pow2(pTtrial))) // running within Sudakov exponent
-        //     - log(pow2(muR)/pow2(minScale)) ); // expansion of alphaSratio * Sudakov|_1
-        // Mixed terms should only depend on leading-order part of kernel
-
-        //if (kernel_base!=0.) mixwt *= (kernel_base-kernel_base_oas2)/kernel_base;
-
-mixsum+=basewt*as0/(4.*M_PI) * BETA0 * log(pow2(muR)/pow2(minScale));
-
-cout << __LINE__ << " : Add mix wt " << basewt*mixwt << " " << basewt*as0/(4.*M_PI) * BETA0 * log(pow2(muR)/(b*pow2(pTtrial))) 
-     << " " << basewt*as0/(4.*M_PI) * BETA0 * log(pow2(muR)/pow2(minScale)) << " " << -mixsum << endl;
-
+         // running within Sudakov exponent
+        double mixwt = 
+            as0/(4.*M_PI) * BETA0 * log(pow2(muR)/(b*pow2(pTtrial)));
         second_order_wt += basewt*mixwt;
       }
 
@@ -5073,13 +5061,7 @@ cout << __LINE__ << " : Add mix wt " << basewt*mixwt << " " << basewt*as0/(4.*M_
 
         vector<double> pdfExpNum = pdfExpansion(order, side, flavAft, xAft, pow2(pTtrial), pow2(muF), pow2(muR));
         vector<double> pdfExpDen = pdfExpansion(order, side, flavBef, xBef, pow2(pTtrial), pow2(muF), pow2(muR));
-        //w *= sign(pTtrial - muR) * log( pow2(max(pTtrial,muR)) / pow2(min(pTtrial,muR)) ) *
         double mixwt = ( pdfExpNum[1] / pdfNum - pdfExpDen[1] / pdfDen);
-        // Mixed terms should only depend on leading-order part of kernel
-        //if (kernel_base!=0.) mixwt *= (kernel_base-kernel_base_oas2)/kernel_base;
-
-cout << __LINE__ << " : Add mix wt " << basewt*mixwt << endl;
-
         second_order_wt += basewt*mixwt;
       }
     }
@@ -5093,15 +5075,19 @@ cout << __LINE__ << " : Add mix wt " << basewt*mixwt << endl;
       for ( int j = 0; j < n; ++j ) x *= wts[ind[j]];
       result[n] += x;
     }  while ( updateind(ind, n - 1, wts.size()) );
-    if ( n%2 ) result[n] *= -1.0;
+    if (n%2==1) result[n] *= -1.0;
+    // The second-order term 0.5*(argument of exp)^2 will be balanced by 
+    // a term (Delta|_O(as1))^2 from the Sudakov multiplying the Delta|_O(as1)
+    // Since (Delta|_O(as1))^2 is converging **very slowly** to the
+    // iterated integral (~one digit precision after 100K trial showers), best
+    // to implement the cancellation here "by hand" (resulting in a switch of sign,
+    // see eq. A30 in Tomte paper), and avoid the
+    // (Delta|_O(as1))^2 when assembing the complete weight.
+    if (n%2==0) result[n] *= -1.0;
   }
 
   // Add mixed-expansion term to to third entry of return vector.
-  // Note: This term does not include (Delta|_O(as1))^2 contributions,
-  // since these would anyway cancel in the final result.   // wrong comment????? 
-//  if (order>1 && result.size()>2) result[2] += second_order_wt; 
-
-  result.push_back(mixsum);
+  if (order>1 && result.size()>2) result[2] += second_order_wt; 
 
   // Reset trialShower object
   psweights->reset();

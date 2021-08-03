@@ -3265,7 +3265,7 @@ int DireMerging::createMatchedEventsForN3LO () {
         it != weightsExp.end(); ++it )
         cout << " " << it->first << " " << it->second << endl;
 
-    vector<double> oas1, a1, a2, b1, b2, w1, w2;
+    vector<double> oas1, a1, a2, b1, b2, w1, w2, delta1;
     for ( map<string,double>::iterator
       it = weightsExp.begin();
       it != weightsExp.end(); ++it ) {
@@ -3286,14 +3286,15 @@ int DireMerging::createMatchedEventsForN3LO () {
           w1.push_back(it->second);
         if (it->first.find("0_2") != string::npos || it->first.find("1_2")!= string::npos )
           w2.push_back(it->second);
+        if ( it->first.find("delta") != string::npos
+          && (it->first.find("0_1") != string::npos || it->first.find("1_1")!= string::npos))
+          delta1.push_back(it->second);
       }
     }
 
-cout << __LINE__ << " : Add mix wt " << weightsExp["alphasratio_1_1"]*weightsExp["delta_0_1"] << endl;
+//cout << __LINE__ << " : Add mix wt " << weightsExp["alphasratio_1_1"]*weightsExp["delta_0_1"] << endl;
 
-    double wgt1DoubleSubt_tmp = 0.;
-
-    // O(as^2) term of weight expansion.
+/*    // O(as^2) term of weight expansion.
     double tmp=0.;
     for (int i=0; i < (int)a1.size(); ++i) {
       for (int j=i+1; j < (int)a1.size(); ++j) tmp -= a1[i]*a1[j];
@@ -3315,7 +3316,7 @@ cout << __LINE__ << " : Add mix wt " << weightsExp["alphasratio_1_1"]*weightsExp
     for (int i=0; i < (int)w2.size(); ++i) tmp -= w2[i];
 
     for (int i=0; i < (int)b1.size(); ++i) tmp -= pow2(b1[i]);
-
+*/
     // O(as^2) term of weight expansion.
     // Mixed terms:
     double tmp2=0.;
@@ -3333,20 +3334,12 @@ cout << __LINE__ << " : Add mix wt " << weightsExp["alphasratio_1_1"]*weightsExp
     for (int i=0; i < (int)oas1.size(); ++i)
       for (int j=0; j < (int)oas1.size(); ++j) 
         tmp2 += oas1[i]*oas1[j];
-
     // Note: 0.5*(delta_1)^2 is typically converging **very slowly** to the
     // iterated integral (~one digit precision after 20K trial showers).
-    // So should probably do the cancellation "by hand" in the 2nd-order expansion...
-
-cout << tmp << " " << tmp2 << endl;
-
-abort();
-
-
-
-
-
-
+    // So cancellation done "by hand" in the 2nd-order expansion - so
+    // that we should not have added the terms here...
+    for (int i=0; i < (int)delta1.size(); ++i)
+      tmp2 -= pow2(delta1[i]);
 
     double wgt1
       = 1.
@@ -3360,7 +3353,7 @@ abort();
       * ( 1. - (doTOMTESudakovs     ? weightsExp["delta_0_1"]       : 0.)
              - (doTOMTEAlphasRatios ? weightsExp["alphasratio_1_1"] : 0.));
 
-    double wgt1DoubleSubt
+/*    double wgt1DoubleSubt
       = 1.
       * (doTOMTESudakovs     ? weights["delta_0"]       : 1.)
       * (doTOMTEAlphasRatios ? weights["alphasratio_1"] : 1.)
@@ -3374,6 +3367,9 @@ abort();
              + (doTOMTEAlphasRatios  ? pow2(weightsExp["alphasratio_1_1"]) : 0.)
              +  (doTOMTESudakovs     ? weightsExp["delta_0_1"]             : 0.)
                *(doTOMTEAlphasRatios ? weightsExp["alphasratio_1_1"]       : 0.));
+*/
+
+    double wgt1DoubleSubt = tmp2;
 
     double n0lo_wt = atof(infoPtr->getEventAttribute("wfo_1_3").c_str());
     double n1lo_wt = atof(infoPtr->getEventAttribute("wfo_2_3").c_str());

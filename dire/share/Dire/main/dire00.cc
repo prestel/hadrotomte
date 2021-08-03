@@ -5,9 +5,9 @@
 // Pythia includes.
 #include "Pythia8/Pythia.h"
 
-using namespace Pythia8;
-
 #include "DirePlugins/ApfelHooks.h"
+
+using namespace Pythia8;
 
 //==========================================================================
 
@@ -40,7 +40,34 @@ int main( int argc, char* argv[]  ){
   double sumwt = 0.;
   double sumwtsq = 0.;
 
-  // Start generation loop
+  //////////////////////////////////////////////////////////////////////////////
+  // Check of the PDF expansion
+  //////////////////////////////////////////////////////////////////////////////
+  double xmax = 1.-1e-5;
+  double xmin = 1e-5;
+  int NXSTEPS = 1000;
+  double xstp = exp(log(xmax / xmin) / ( NXSTEPS - 1 ));
+
+  double muf2 = pow2(pythia.settings.parm("Merging:muFacInME"));
+  double mur2 = pow2(pythia.settings.parm("Merging:muRenInME"));
+
+  std::vector<double> tv = {pow2(10), pow2(80), muf2, pow2(100), pow2(1000)};
+
+  ::LHAPDF::PDF* pdf = apfelHooks->pdfs[1];
+
+  for (double tnow : tv) {
+    for (double xnow = xmin; xnow <= xmax; xnow *= xstp) {
+      double pdfexpnowlo   = apfelHooks->getPDFexpansion(0, 1, xnow, tnow, muf2, mur2);
+      double pdfexpnownlo  = apfelHooks->getPDFexpansion(1, 1, xnow, tnow, muf2, mur2);
+      double pdfexpnownnlo = apfelHooks->getPDFexpansion(2, 1, xnow, tnow, muf2, mur2);
+      std::cout << std::scientific << sqrt(muf2) << "\t" << sqrt(mur2) << "\t" << sqrt(tnow) << "\t" << xnow << "\t"
+		<< pdfexpnowlo << "\t" << pdfexpnownlo << "\t" << pdfexpnownnlo << "\t" << pdf->xfxQ2(1, xnow, tnow) << std::endl;
+    }
+    std::cout << "\n\n";
+  }
+  //////////////////////////////////////////////////////////////////////////////
+
+  /*// Start generation loop
   int nEvent = pythia.settings.mode("Main:numberOfEvents");
   for( int iEvent=0; iEvent<nEvent; ++iEvent ){
 
@@ -115,7 +142,7 @@ int main( int argc, char* argv[]  ){
        << "\n\t Variance of shower weight="
        << sqrt(1/double(nEvent)*(sumwtsq - pow(sumwt,2)/double(nEvent)))
        << endl << endl;
-
+  */
   // Done
   return 0;
 
